@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-04-06 21:23:30
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-04-07 17:44:33
+LastEditTime: 2023-04-07 17:45:21
 Description: main function for doing our task
 '''
 #%%
@@ -38,7 +38,7 @@ testset = waveformDataset(X_test, y_test)
 # Hyper parameters
 batch_size = 256
 learning_rate = 0.001
-num_epochs = 2
+num_epochs = 100
 history = dict(train_loss=[], test_loss=[], train_acc=[], test_acc=[], train_f1=[], test_f1=[])
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

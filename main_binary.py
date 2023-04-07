@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-04-06 21:23:30
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-04-07 17:45:21
+LastEditTime: 2023-04-07 17:53:11
 Description: main function for doing our task
 '''
 #%%
@@ -62,5 +62,5 @@ train_loss, train_acc, test_acc = model_train(
 )
 
 torch.save(model.state_dict(), save_model_path + f"best_model.pth")
-
+np.save(save_model_path + f"epochs{num_epochs}_lr_{learning_rate}_bs_{batch_size}_history.npy", history)
 # %%

@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-04-06 21:32:59
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-04-06 22:05:19
+LastEditTime: 2023-04-07 15:22:16
 Description: deep learning models definition
 '''
 import torch
@@ -20,11 +20,13 @@ class LSTM(nn.Module):
         )
         self.dropout = nn.Dropout(0.2)
         self.linear = nn.Linear(256, num_class)
-    
+        self.sigmoid = nn.Sigmoid()
+        
     def forward(self, x):
         x, _ = self.lstm(x)
         # take only the last output
         x = x[:, -1, :]
         # produce output
         x = self.linear(self.dropout(x))
-        return x
+        outputs = self.sigmoid(x)
+        return outputs

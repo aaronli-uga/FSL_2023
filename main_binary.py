@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-04-06 21:23:30
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-04-07 16:24:56
+LastEditTime: 2023-04-07 17:44:33
 Description: main function for doing our task
 '''
 #%%
@@ -38,7 +38,9 @@ testset = waveformDataset(X_test, y_test)
 # Hyper parameters
 batch_size = 256
 learning_rate = 0.001
-num_epochs = 100
+num_epochs = 2
+history = dict(train_loss=[], test_loss=[], train_acc=[], test_acc=[], train_f1=[], test_f1=[])
+
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 trainloader = DataLoader(trainset, shuffle=True, batch_size=batch_size)
@@ -49,13 +51,16 @@ optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
 # %%
 # model training
-train_loss, train_acc, test_acc = model_train(model, 
+train_loss, train_acc, test_acc = model_train(
+    model=model, 
     train_loader=trainloader, 
     val_loader=testloader,
     num_epochs=num_epochs,
     optimizer=optimizer,
-    device=device)
+    device=device,
+    history=history
+)
 
-torch.save(model.state_dict(), save_model_path + f"best_model")
+torch.save(model.state_dict(), save_model_path + f"best_model.pth")
 
 # %%

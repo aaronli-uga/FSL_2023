@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-04-07 11:13:41
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-04-08 11:08:05
+LastEditTime: 2023-04-08 11:45:31
 Description: helper function for training the model
 '''
 import numpy as np
@@ -34,7 +34,7 @@ def model_train(model, train_loader, val_loader, num_epochs, optimizer, device, 
     
     loss_fn = nn.BCELoss()
     
-    best_acc = -np.inf
+    best_f1 = -np.inf
     best_weights = None
     
     for epoch in range(num_epochs):
@@ -69,7 +69,9 @@ def model_train(model, train_loader, val_loader, num_epochs, optimizer, device, 
             y_val = y_val.to(device, dtype=torch.float32)
             y_pred = model(X_val)
             acc = (y_pred.round() == y_val).float().mean()
-            f1 = f1_score(y_true=y_val, y_pred=y_pred, average='binary')
+            f1 = f1_score(y_true=y_val.cpu().detach().numpy(), 
+                          y_pred=y_pred.round().cpu().detach().numpy(), 
+                          average='binary')
             
             history['train_loss'].append(sum(train_loss) / len(train_loss))
             history['train_acc'].append(sum(train_acc) / len(train_acc))
@@ -77,17 +79,17 @@ def model_train(model, train_loader, val_loader, num_epochs, optimizer, device, 
             history['test_f1'].append(float(f1))
             print(f"train acc: {history['train_acc'][-1]}. val acc: {history['test_acc'][-1]}")
             print(f"train loss: {history['train_loss'][-1]}")
-            print(f"val f1: {history['test_f1']}")
+            print(f"val f1: {history['test_f1'][-1]}")
             
             
-            if acc > best_acc:
-                best_acc = acc
+            if f1 > best_f1:
+                best_f1 = f1
                 best_weights = copy.deepcopy(model.state_dict())
                 
             # only validate one batch
             break
     
-    print(f"Training Done. best acc: {best_acc}")
+    print(f"Training Done. best F1 score: {best_f1}")
     # save the model with best performance
     model.load_state_dict(best_weights)
     

@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-04-08 11:54:41
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-04-08 14:18:17
+LastEditTime: 2023-04-08 15:04:44
 Description: main function for doing the multiclass classification
 '''
 #%%
@@ -36,8 +36,8 @@ testset = waveformDataset(X_test, y_test)
 
 # Hyper parameters
 batch_size = 256
-learning_rate = 0.001
-num_epochs = 500
+learning_rate = 0.005
+num_epochs = 800
 history = dict(train_loss=[], test_loss=[], train_acc=[], test_acc=[], train_f1=[], test_f1=[])
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-04-06 21:32:59
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-04-07 15:22:16
+LastEditTime: 2023-04-08 13:10:48
 Description: deep learning models definition
 '''
 import torch
@@ -18,8 +18,9 @@ class LSTM(nn.Module):
             num_layers = 1,
             batch_first = True
         )
+        self.num_class = num_class
         self.dropout = nn.Dropout(0.2)
-        self.linear = nn.Linear(256, num_class)
+        self.linear = nn.Linear(256, self.num_class)
         self.sigmoid = nn.Sigmoid()
         
     def forward(self, x):
@@ -27,6 +28,8 @@ class LSTM(nn.Module):
         # take only the last output
         x = x[:, -1, :]
         # produce output
-        x = self.linear(self.dropout(x))
-        outputs = self.sigmoid(x)
+        outputs = self.linear(self.dropout(x))
+        # multiclass classification
+        if self.num_class > 1:
+            outputs = self.sigmoid(outputs)
         return outputs

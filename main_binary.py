@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-04-06 21:23:30
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-04-07 17:58:40
+LastEditTime: 2023-04-08 11:04:56
 Description: main function for doing our task
 '''
 #%%
@@ -51,7 +51,7 @@ optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
 # %%
 # model training
-train_loss, train_acc, test_acc = model_train(
+model_train(
     model=model, 
     train_loader=trainloader, 
     val_loader=testloader,

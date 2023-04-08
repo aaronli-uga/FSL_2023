@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-04-07 11:13:41
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-04-07 17:39:54
+LastEditTime: 2023-04-08 11:08:05
 Description: helper function for training the model
 '''
 import numpy as np
@@ -10,6 +10,7 @@ import copy
 import torch
 import torch.nn as nn 
 import tqdm
+from sklearn.metrics import f1_score
 
 def model_train(model, train_loader, val_loader, num_epochs, optimizer, device, history):
     """_summary_
@@ -68,12 +69,16 @@ def model_train(model, train_loader, val_loader, num_epochs, optimizer, device, 
             y_val = y_val.to(device, dtype=torch.float32)
             y_pred = model(X_val)
             acc = (y_pred.round() == y_val).float().mean()
+            f1 = f1_score(y_true=y_val, y_pred=y_pred, average='binary')
             
             history['train_loss'].append(sum(train_loss) / len(train_loss))
             history['train_acc'].append(sum(train_acc) / len(train_acc))
             history['test_acc'].append(float(acc))
+            history['test_f1'].append(float(f1))
             print(f"train acc: {history['train_acc'][-1]}. val acc: {history['test_acc'][-1]}")
             print(f"train loss: {history['train_loss'][-1]}")
+            print(f"val f1: {history['test_f1']}")
+            
             
             if acc > best_acc:
                 best_acc = acc
@@ -83,7 +88,8 @@ def model_train(model, train_loader, val_loader, num_epochs, optimizer, device, 
             break
     
     print(f"Training Done. best acc: {best_acc}")
+    # save the model with best performance
     model.load_state_dict(best_weights)
     
-    return train_loss, train_acc, val_acc
+    return 0
                 

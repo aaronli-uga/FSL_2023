@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-04-07 11:13:41
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-04-08 14:33:46
+LastEditTime: 2023-04-10 00:34:29
 Description: helper function for training the model
 '''
 import numpy as np
@@ -139,7 +139,8 @@ def model_train_multiclass(model, train_loader, val_loader, num_epochs, optimize
             y_val = y_val.detach().numpy()
             
             val_acc = accuracy_score(predicted, y_val)
-            val_f1 = f1_score(predicted, y_val, average='weighted')
+            val_f1 = f1_score(predicted, y_val, average='macro')
+            val_f1_none = f1_score(predicted, y_val, average=None)
             
             predicted_labels = np.concatenate(predicted_labels).ravel()
             ground_truth_labels = np.concatenate(ground_truth_labels).ravel()
@@ -149,11 +150,13 @@ def model_train_multiclass(model, train_loader, val_loader, num_epochs, optimize
             history['train_f1'].append(f1_score(predicted_labels, ground_truth_labels, average='weighted'))
             history['test_acc'].append(float(val_acc))
             history['test_f1'].append(float(val_f1))
+            history['test_f1_all'].append(val_f1_none.tolist())
             
             print("-------------------------------------------")
             print(f"train loss: {history['train_loss'][-1]}\n")
             print(f"train acc: {history['train_acc'][-1]}. val acc: {history['test_acc'][-1]}")
             print(f"train f1: {history['train_f1'][-1]}. val f1: {history['test_f1'][-1]}")
+            print(f"test f1 all: {history['test_f1_all'][-1]}")
             
             
             if val_f1 > best_f1:

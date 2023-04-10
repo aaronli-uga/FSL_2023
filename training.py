@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-04-07 11:13:41
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-04-10 00:34:29
+LastEditTime: 2023-04-10 11:00:28
 Description: helper function for training the model
 '''
 import numpy as np
@@ -133,7 +133,9 @@ def model_train_multiclass(model, train_loader, val_loader, num_epochs, optimize
         model.eval()
         for X_val, y_val in val_loader:
             X_val = X_val.to(device, dtype=torch.float32)
+            y_val = y_val.to(device, dtype=torch.long)
             y_pred = model(X_val)
+            loss = loss_fn(y_pred, y_val)
             _, predicted = torch.max(y_pred, 1)
             predicted = predicted.cpu().detach().numpy()
             y_val = y_val.detach().numpy()
@@ -146,6 +148,7 @@ def model_train_multiclass(model, train_loader, val_loader, num_epochs, optimize
             ground_truth_labels = np.concatenate(ground_truth_labels).ravel()
             
             history['train_loss'].append(sum(train_loss) / len(train_loss))
+            history['test_loss'].append(float(loss))
             history['train_acc'].append(accuracy_score(predicted_labels, ground_truth_labels))
             history['train_f1'].append(f1_score(predicted_labels, ground_truth_labels, average='weighted'))
             history['test_acc'].append(float(val_acc))
@@ -153,7 +156,7 @@ def model_train_multiclass(model, train_loader, val_loader, num_epochs, optimize
             history['test_f1_all'].append(val_f1_none.tolist())
             
             print("-------------------------------------------")
-            print(f"train loss: {history['train_loss'][-1]}\n")
+            print(f"train loss: {history['train_loss'][-1]}. test loss: {history['test_loss'][-1]}\n")
             print(f"train acc: {history['train_acc'][-1]}. val acc: {history['test_acc'][-1]}")
             print(f"train f1: {history['train_f1'][-1]}. val f1: {history['test_f1'][-1]}")
             print(f"test f1 all: {history['test_f1_all'][-1]}")

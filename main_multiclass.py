@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-04-08 11:54:41
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-04-10 00:31:35
+LastEditTime: 2023-04-10 10:56:14
 Description: main function for doing the multiclass classification
 '''
 #%%
@@ -37,7 +37,7 @@ testset = waveformDataset(X_test, y_test)
 # Hyper parameters
 batch_size = 256
 learning_rate = 0.001
-num_epochs = 100
+num_epochs = 500
 history = dict(train_loss=[], test_loss=[], train_acc=[], test_acc=[], train_f1=[], test_f1=[], test_f1_all=[])
 
 device = torch.device("cuda:2" if torch.cuda.is_available() else "cpu")
@@ -45,7 +45,11 @@ device = torch.device("cuda:2" if torch.cuda.is_available() else "cpu")
 trainloader = DataLoader(trainset, shuffle=True, batch_size=batch_size)
 testloader = DataLoader(testset, shuffle=True, batch_size=1024) # get all the samples at once
 # model = LSTM(input_size=6, seq_num=100, num_class=9)
-model = QNN(6, 32, 3, 1, 9)
+model = QNN(n_input_channels=6,
+            n_output_channels=64,
+            kernel_size=3,
+            stride=1,
+            n_classes=9)
 model.to(device)
 optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 

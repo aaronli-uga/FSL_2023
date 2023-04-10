@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-04-06 21:32:59
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-04-10 00:32:34
+LastEditTime: 2023-04-10 10:55:56
 Description: deep learning models definition
 '''
 import torch
@@ -82,7 +82,7 @@ class QNN(nn.Module):
                                  kernel_size, stride = 2, n_pad = 0, 
                                  dropout=dropout)
         self.flatten = nn.Flatten()
-        self.fc = nn.Linear(384,n_classes)
+        self.fc = nn.Linear(int(384*2),n_classes)
         
     def forward(self, x):
         x = self.conv1(x)

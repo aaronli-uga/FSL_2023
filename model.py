@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-04-06 21:32:59
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-04-10 10:55:56
+LastEditTime: 2023-04-25 17:08:11
 Description: deep learning models definition
 '''
 import torch
@@ -94,3 +94,24 @@ class QNN(nn.Module):
         x = self.flatten(x)
         x = self.fc(x)
         return x
+
+class PrototypicalNetworks(nn.Module):
+    def __init__(self, backbone: nn.Module) -> None:
+        super(PrototypicalNetworks, self).__init__()
+        self.backbone = backbone
+        
+    def forward(
+        self,
+        support_data: torch.Tensor,
+        support_labels: torch.Tensor,
+        query_data: torch.Tensor,
+    ) -> torch.Tensor:
+        """
+        Predict query labels using labeld support data.
+        """
+        z_support = self.backbone.forward(support_data)
+        z_query = self.bakbone.forward(query_data)
+        
+        n_way = len(torch.unique(support_labels))
+        # Prototype i is the mean of all support features vector with label i
+        

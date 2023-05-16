@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-04-08 11:54:41
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-04-10 10:56:14
+LastEditTime: 2023-05-16 17:05:07
 Description: main function for doing the multiclass classification
 '''
 #%%
@@ -22,6 +22,9 @@ from training import model_train_multiclass
 save_model_path = "saved_models/"
 X = np.load('dataset/w100_diagnosis_data_norm.npy')
 y = np.load('dataset/w100_diagnosis_label.npy')
+X = X[np.where((y == 0) | (y == 8) | (y == 7))[0]]
+y = y[np.where((y == 0) | (y == 8) | (y == 7))[0]]
+
 
 # Standard Normalization ((X-mean) / std)
 # for i in range(X.shape[0]):

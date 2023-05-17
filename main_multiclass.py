@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-04-08 11:54:41
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-05-16 17:05:07
+LastEditTime: 2023-05-16 17:06:39
 Description: main function for doing the multiclass classification
 '''
 #%%
@@ -68,5 +68,5 @@ model_train_multiclass(
     history=history
 )
 
-torch.save(model.state_dict(), save_model_path + f"change_multiclass_best_model.pth")
-np.save(save_model_path + f"update_multiclass_epochs{num_epochs}_lr_{learning_rate}_bs_{batch_size}_history.npy", history)
+torch.save(model.state_dict(), save_model_path + f"three_multiclass_best_model.pth")
+np.save(save_model_path + f"three_multiclass_epochs{num_epochs}_lr_{learning_rate}_bs_{batch_size}_history.npy", history)

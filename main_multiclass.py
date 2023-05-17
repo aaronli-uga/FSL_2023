@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-04-08 11:54:41
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-05-16 17:06:39
+LastEditTime: 2023-05-17 13:55:51
 Description: main function for doing the multiclass classification
 '''
 #%%
@@ -22,8 +22,11 @@ from training import model_train_multiclass
 save_model_path = "saved_models/"
 X = np.load('dataset/w100_diagnosis_data_norm.npy')
 y = np.load('dataset/w100_diagnosis_label.npy')
-X = X[np.where((y == 0) | (y == 8) | (y == 7))[0]]
-y = y[np.where((y == 0) | (y == 8) | (y == 7))[0]]
+# X = X[np.where((y == 0) | (y == 8) | (y == 7))[0]]
+# y = y[np.where((y == 0) | (y == 8) | (y == 7))[0]]
+
+X = X[np.where((y == 1) | (y == 2) | (y == 3) | (y == 4) | (y == 5))[0]]
+y = y[np.where((y == 1) | (y == 2) | (y == 3) | (y == 4) | (y == 5))[0]]
 
 
 # Standard Normalization ((X-mean) / std)
@@ -68,5 +71,5 @@ model_train_multiclass(
     history=history
 )
 
-torch.save(model.state_dict(), save_model_path + f"three_multiclass_best_model.pth")
-np.save(save_model_path + f"three_multiclass_epochs{num_epochs}_lr_{learning_rate}_bs_{batch_size}_history.npy", history)
+torch.save(model.state_dict(), save_model_path + f"five_multiclass_best_model.pth")
+np.save(save_model_path + f"five_multiclass_epochs{num_epochs}_lr_{learning_rate}_bs_{batch_size}_history.npy", history)

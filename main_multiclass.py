@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-04-08 11:54:41
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-05-17 13:55:51
+LastEditTime: 2023-05-17 22:45:22
 Description: main function for doing the multiclass classification
 '''
 #%%
@@ -20,13 +20,13 @@ from model import LSTM, QNN
 from training import model_train_multiclass
 
 save_model_path = "saved_models/"
-X = np.load('dataset/w100_diagnosis_data_norm.npy')
-y = np.load('dataset/w100_diagnosis_label.npy')
+X = np.load('dataset/8cases/X_norm.npy')
+y = np.load('dataset/8cases/y.npy')
 # X = X[np.where((y == 0) | (y == 8) | (y == 7))[0]]
 # y = y[np.where((y == 0) | (y == 8) | (y == 7))[0]]
 
-X = X[np.where((y == 1) | (y == 2) | (y == 3) | (y == 4) | (y == 5))[0]]
-y = y[np.where((y == 1) | (y == 2) | (y == 3) | (y == 4) | (y == 5))[0]]
+# X = X[np.where((y == 1) | (y == 2) | (y == 3) | (y == 4) | (y == 5))[0]]
+# y = y[np.where((y == 1) | (y == 2) | (y == 3) | (y == 4) | (y == 5))[0]]
 
 
 # Standard Normalization ((X-mean) / std)
@@ -43,7 +43,7 @@ testset = waveformDataset(X_test, y_test)
 # Hyper parameters
 batch_size = 256
 learning_rate = 0.001
-num_epochs = 500
+num_epochs = 1000
 history = dict(train_loss=[], test_loss=[], train_acc=[], test_acc=[], train_f1=[], test_f1=[], test_f1_all=[])
 
 device = torch.device("cuda:2" if torch.cuda.is_available() else "cpu")
@@ -55,7 +55,7 @@ model = QNN(n_input_channels=6,
             n_output_channels=64,
             kernel_size=3,
             stride=1,
-            n_classes=9)
+            n_classes=8)
 model.to(device)
 optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
@@ -71,5 +71,5 @@ model_train_multiclass(
     history=history
 )
 
-torch.save(model.state_dict(), save_model_path + f"five_multiclass_best_model.pth")
-np.save(save_model_path + f"five_multiclass_epochs{num_epochs}_lr_{learning_rate}_bs_{batch_size}_history.npy", history)
+torch.save(model.state_dict(), save_model_path + f"8cases_multiclass_best_model.pth")
+np.save(save_model_path + f"8cases_multiclass_epochs{num_epochs}_lr_{learning_rate}_bs_{batch_size}_history.npy", history)

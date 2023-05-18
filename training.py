@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-04-07 11:13:41
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-04-10 11:00:28
+LastEditTime: 2023-05-17 23:10:35
 Description: helper function for training the model
 '''
 import numpy as np
@@ -138,7 +138,7 @@ def model_train_multiclass(model, train_loader, val_loader, num_epochs, optimize
             loss = loss_fn(y_pred, y_val)
             _, predicted = torch.max(y_pred, 1)
             predicted = predicted.cpu().detach().numpy()
-            y_val = y_val.detach().numpy()
+            y_val = y_val.cpu().detach().numpy()
             
             val_acc = accuracy_score(predicted, y_val)
             val_f1 = f1_score(predicted, y_val, average='macro')

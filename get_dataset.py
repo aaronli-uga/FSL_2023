@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-05-17 16:29:18
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-05-17 17:17:17
+LastEditTime: 2023-05-17 21:48:27
 Description: 
 '''
 import pandas as pd
@@ -17,22 +17,34 @@ from util import sliding_windows
 #     o1, _ = sliding_windows(data_npy, sub_window_size=2000, step_size=20)
 #     np.save(f"dataset/8cases/X_{file}.npy", o1)
 
-# X_0 = np.load("dataset/8cases/X_normal.npy")
-# X_1 = np.load("dataset/8cases/X_attack10.npy")
-# X_2 = np.load("dataset/8cases/X_attack15.npy")
-# X_3 = np.load("dataset/8cases/X_attack17.npy")
-# X_4 = np.load("dataset/8cases/X_attack26.npy")
-# X_5 = np.load("dataset/8cases/X_attack49.npy")
-# X_6 = np.load("dataset/8cases/X_attack57.npy")
-# X_7 = np.load("dataset/8cases/X_attack77.npy")
+X_0 = np.load("dataset/8cases/X_normal.npy")
+X_1 = np.load("dataset/8cases/X_attack10.npy")
+X_2 = np.load("dataset/8cases/X_attack15.npy")
+X_3 = np.load("dataset/8cases/X_attack17.npy")
+X_4 = np.load("dataset/8cases/X_attack26.npy")
+X_5 = np.load("dataset/8cases/X_attack49.npy")
+X_6 = np.load("dataset/8cases/X_attack57.npy")
+X_7 = np.load("dataset/8cases/X_attack77.npy")
+
+y_0 = np.ones(X_0.shape[0]) * 0
+y_1 = np.ones(X_1.shape[0]) * 1
+y_2 = np.ones(X_2.shape[0]) * 2
+y_3 = np.ones(X_3.shape[0]) * 3
+y_4 = np.ones(X_4.shape[0]) * 4
+y_5 = np.ones(X_5.shape[0]) * 5
+y_6 = np.ones(X_6.shape[0]) * 6
+y_7 = np.ones(X_7.shape[0]) * 7
+
 # X = np.concatenate((X_0, X_1, X_2, X_3, X_4, X_5, X_6, X_7), axis=0)
-X = np.load("dataset/8cases/X.npy")
-X = np.transpose(X, (0, 2, 1))
+# X = np.load("dataset/8cases/X.npy")
+# X = np.transpose(X, (0, 2, 1))
 
+y = np.concatenate((y_0, y_1, y_2, y_3, y_4, y_5, y_6, y_7))
 # Standard Normalization ((X-mean) / std)
-for i in range(X.shape[0]):
-    for j in range(X.shape[1]):
-        X[i,j,:] = (X[i,j,:] - X[i,j,:].mean()) / X[i,j,:].std()
+# for i in range(X.shape[0]):
+#     for j in range(X.shape[1]):
+#         X[i,j,:] = (X[i,j,:] - X[i,j,:].mean()) / X[i,j,:].std()
 
 
-np.save(f"dataset/8cases/X_norm.npy", X)
+# np.save(f"dataset/8cases/X_norm.npy", X)
+np.save(f"dataset/8cases/y.npy", y)

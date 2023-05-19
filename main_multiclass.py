@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-04-08 11:54:41
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-05-17 22:45:22
+LastEditTime: 2023-05-18 19:26:29
 Description: main function for doing the multiclass classification
 '''
 #%%
@@ -36,20 +36,26 @@ y = np.load('dataset/8cases/y.npy')
 
 # X = np.transpose(X, (0,2,1)) # transpose to match the lstm standard
 # y = np.expand_dims(y, axis=1)
-X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.8, shuffle=True, random_state=7)
+X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.8, test_size=0.2, shuffle=True, random_state=7)
+X_train, X_cv, y_train, y_cv = train_test_split(X_train, y_train, train_size=0.75, test_size=0.25, shuffle=True, random_state=27)
+
+# save test dataset for ultimate testing.
+np.save("X_test.npy", X_test)
+np.save("y_test.npy", y_test)
+
 trainset = waveformDataset(X_train, y_train)
-testset = waveformDataset(X_test, y_test)
+validset = waveformDataset(X_cv, y_cv)
 
 # Hyper parameters
 batch_size = 256
 learning_rate = 0.001
-num_epochs = 1000
-history = dict(train_loss=[], test_loss=[], train_acc=[], test_acc=[], train_f1=[], test_f1=[], test_f1_all=[])
+num_epochs = 200
+history = dict(test_loss=[], test_acc=[], test_f1=[], test_f1_all=[])
 
 device = torch.device("cuda:2" if torch.cuda.is_available() else "cpu")
 
 trainloader = DataLoader(trainset, shuffle=True, batch_size=batch_size)
-testloader = DataLoader(testset, shuffle=True, batch_size=1024) # get all the samples at once
+testloader = DataLoader(validset, shuffle=True, batch_size=256) # get all the samples at once
 # model = LSTM(input_size=6, seq_num=100, num_class=9)
 model = QNN(n_input_channels=6,
             n_output_channels=64,
@@ -71,5 +77,5 @@ model_train_multiclass(
     history=history
 )
 
-torch.save(model.state_dict(), save_model_path + f"8cases_multiclass_best_model.pth")
+torch.save(model.state_dict(), save_model_path + f"8cases_multiclass_epochs{num_epochs}_lr_{learning_rate}_bs_{batch_size}_best_model.pth")
 np.save(save_model_path + f"8cases_multiclass_epochs{num_epochs}_lr_{learning_rate}_bs_{batch_size}_history.npy", history)

@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-04-07 11:13:41
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-05-17 23:10:35
+LastEditTime: 2023-05-18 23:52:52
 Description: helper function for training the model
 '''
 import numpy as np
@@ -10,7 +10,7 @@ import copy
 import torch
 import torch.nn as nn 
 import tqdm
-from sklearn.metrics import f1_score, accuracy_score
+from sklearn.metrics import f1_score, accuracy_score, confusion_matrix
 
 def model_train(model, train_loader, val_loader, num_epochs, optimizer, device, history):
     """_summary_
@@ -174,3 +174,29 @@ def model_train_multiclass(model, train_loader, val_loader, num_epochs, optimize
     model.load_state_dict(best_weights)
     
     return 0
+
+def evaluate(dataloader, model, loss_fn, device, history):
+    model.eval()
+    predicted_labels, ground_truth_labels = np.array([], dtype=int), np.array([], dtype=int)
+    loss_curve = []
+    for X_val, y_val in dataloader:
+        X_val = X_val.to(device, dtype=torch.float32)
+        y_val = y_val.to(device, dtype=torch.long)
+        y_pred = model(X_val)
+        loss = loss_fn(y_pred, y_val)
+        _, predicted = torch.max(y_pred, 1)
+        predicted = predicted.cpu().detach().numpy()
+        y_val = y_val.cpu().detach().numpy()
+        
+        predicted_labels = np.concatenate((predicted_labels, predicted)).ravel()
+        ground_truth_labels = np.concatenate((ground_truth_labels, y_val)).ravel()
+        # loss_curve.append(float(loss.cpu().detach().numpy()))
+        loss_curve.append(float(loss))
+        
+    val_acc = accuracy_score(predicted_labels, ground_truth_labels)
+    val_f1 = f1_score(predicted_labels, ground_truth_labels, average='macro')
+    val_f1_none = f1_score(predicted_labels, ground_truth_labels, average=None)
+    history['test_acc'].append(float(val_acc))
+    history['test_f1'].append(float(val_f1))
+    history['test_f1_all'].append(val_f1_none.tolist())
+    history['test_loss'].append(sum(loss_curve) / len(loss_curve))

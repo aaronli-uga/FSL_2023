@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-04-06 21:32:59
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-05-17 22:25:15
+LastEditTime: 2023-05-18 14:10:41
 Description: deep learning models definition
 '''
 import torch
@@ -87,9 +87,14 @@ class QNN(nn.Module):
         self.resblock4 = ResBlock(n_output_channels, n_output_channels, 
                                  kernel_size, stride = 2, n_pad = 0, 
                                  dropout=dropout)
+        self.resblock5 = ResBlock(n_output_channels, n_output_channels, 
+                                 kernel_size, stride = 2, n_pad = 1, 
+                                 dropout=dropout)
+        self.resblock6 = ResBlock(n_output_channels, n_output_channels, 
+                                 kernel_size, stride = 2, n_pad = 0, 
+                                 dropout=dropout)
         self.flatten = nn.Flatten()
-        self.fc1 = nn.Linear(int(64 * 62), 1000)
-        self.fc2 = nn.Linear(1000, n_classes)
+        self.fc = nn.Linear(int(64 * 15), n_classes)
         
     def forward(self, x):
         x = self.conv1(x)
@@ -100,9 +105,10 @@ class QNN(nn.Module):
         x = self.resblock2(x)
         x = self.resblock3(x)
         x = self.resblock4(x)
+        x = self.resblock5(x)
+        x = self.resblock6(x)
         x = self.flatten(x)
-        x = self.fc1(x)
-        x = self.fc2(x)
+        x = self.fc(x)
         return x
 
 class PrototypicalNetworks(nn.Module):

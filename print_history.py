@@ -2,8 +2,8 @@
 Author: Qi7
 Date: 2023-04-07 23:27:47
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-05-23 23:09:36
-Description: 
+LastEditTime: 2023-05-24 11:13:16
+Description: print out the history information of trained model, such as test loss and test f1 score.
 '''
 #%%
 import numpy as np

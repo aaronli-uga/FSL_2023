@@ -2,8 +2,8 @@
 Author: Qi7
 Date: 2022-12-13 22:48:05
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-04-06 21:15:46
-Description: this python script convert all the window csv data to one npy file for training purpose.
+LastEditTime: 2023-05-24 11:20:32
+Description: This python script convert all the window csv data to one npy file for training purpose. (Jiabao dataset)
 '''
 import os
 import numpy as np
@@ -44,7 +44,6 @@ diagnosis_path = 'original_dataset/w100_final_dataset/fault_diagnosis/deep_learn
 # with open('w100_detection_label.npy', 'wb') as f:
 #     np.save(f, y_data)
     
-
 
 ############################################### diagnosis
 normal_path = diagnosis_path + 'Normal/'

@@ -4,6 +4,8 @@
 Created on Sun Apr 2 19:44:13 2023
 
 @author: Yingjian
+
+Description: Yingjian's code for referenceing the Resnet CNN.
 """
 
 import torch.nn as nn

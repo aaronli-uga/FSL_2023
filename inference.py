@@ -2,8 +2,8 @@
 Author: Qi7
 Date: 2023-05-18 12:59:58
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-05-22 16:31:06
-Description: 
+LastEditTime: 2023-05-24 11:32:11
+Description: doing the inference on test data using a trained model. History information such as accuracy and f1 score will be printed.
 '''
 import numpy as np
 import matplotlib.pyplot as plt
@@ -14,8 +14,8 @@ from loader import waveformDataset
 from model import QNN
 from training import evaluate
 
-X = np.load('dataset/8cases/X_test.npy')
-y = np.load('dataset/8cases/y_test.npy')
+X = np.load('dataset/8cases_jinan/X_test.npy')
+y = np.load('dataset/8cases_jinan/y_test.npy')
 
 saved_model = "saved_models/8cases_multiclass_epochs200_lr_0.001_bs_256_best_model.pth"
 history = dict(test_loss=[], test_acc=[], test_f1=[], test_f1_all=[])

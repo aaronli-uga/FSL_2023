@@ -2,8 +2,8 @@
 Author: Qi7
 Date: 2023-05-21 22:20:10
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-05-24 09:55:24
-Description: test the tsne result to see if the features embedding could be distinguished with each other
+LastEditTime: 2023-05-24 16:51:03
+Description: SNN model. test the tsne result to see if the features embedding could be distinguished with each other
 '''
 #%%
 import numpy as np

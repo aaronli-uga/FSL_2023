@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-04-06 21:32:59
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-05-23 16:47:16
+LastEditTime: 2023-05-24 16:35:18
 Description: deep learning models definition
 '''
 import torch
@@ -164,6 +164,7 @@ class SiameseNet(nn.Module):
 
 
 
+# incomplete prototypical networks
 class PrototypicalNetworks(nn.Module):
     def __init__(self, backbone: nn.Module) -> None:
         super(PrototypicalNetworks, self).__init__()

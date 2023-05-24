@@ -2,8 +2,8 @@
 Author: Qi7
 Date: 2023-05-16 23:28:18
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-05-24 09:57:04
-Description: 
+LastEditTime: 2023-05-24 16:39:33
+Description: Test the accuracy from the query set. Number of shots and number of query is provided.
 '''
 #%%
 import numpy as np
@@ -21,8 +21,8 @@ from loader import waveformDataset
 from model import SiameseNet
 from training import model_train_multiclass
 
-X = np.load('dataset/8cases/query_set/X_norm.npy')
-y = np.load('dataset/8cases/query_set/y.npy') # label from 8 to 14
+X = np.load('dataset/8cases_jinan/query_set/X_norm.npy')
+y = np.load('dataset/8cases_jinan/query_set/y.npy') # label from 8 to 14
 
 X_8 = X[np.where(y == 8)[0]]
 X_9 = X[np.where(y == 9)[0]]
@@ -43,6 +43,7 @@ y_14 = y[np.where(y == 14)[0]]
 # randomly select the support set.
 num_shots = 20
 num_query = 100
+
 support_8 = X_8[np.random.randint(0, X_8.shape[0], num_shots)]
 support_9 = X_9[np.random.randint(0, X_9.shape[0], num_shots)]
 support_10 = X_10[np.random.randint(0, X_10.shape[0], num_shots)]
@@ -340,93 +341,93 @@ dis_query_14 = [
     ]
 print("query 14, attack number:", dis_query_14.index(min(dis_query_14)) + 8)
 
-#%% Tsne results
+# #%% Tsne results
 
-with torch.no_grad():
-    X_1 = torch.from_numpy(X_1)
-    X_1.to(device, dtype=torch.float)
-    pred = model(X_1)
-    X_1_embedding = pred.cpu().numpy().mean(axis=0)
-    X_1_embedding = np.expand_dims(X_1_embedding, axis=0)
+# with torch.no_grad():
+#     X_1 = torch.from_numpy(X_1)
+#     X_1.to(device, dtype=torch.float)
+#     pred = model(X_1)
+#     X_1_embedding = pred.cpu().numpy().mean(axis=0)
+#     X_1_embedding = np.expand_dims(X_1_embedding, axis=0)
     
-    X_2 = torch.from_numpy(X_2)
-    X_2.to(device, dtype=torch.float)
-    pred = model(X_2)
-    X_2_embedding = pred.cpu().numpy().mean(axis=0)
-    X_2_embedding = np.expand_dims(X_2_embedding, axis=0)
+#     X_2 = torch.from_numpy(X_2)
+#     X_2.to(device, dtype=torch.float)
+#     pred = model(X_2)
+#     X_2_embedding = pred.cpu().numpy().mean(axis=0)
+#     X_2_embedding = np.expand_dims(X_2_embedding, axis=0)
     
-    X_3 = torch.from_numpy(X_3)
-    X_3.to(device, dtype=torch.float)
-    pred = model(X_3)
-    X_3_embedding = pred.cpu().numpy().mean(axis=0)
-    X_3_embedding = np.expand_dims(X_3_embedding, axis=0)
+#     X_3 = torch.from_numpy(X_3)
+#     X_3.to(device, dtype=torch.float)
+#     pred = model(X_3)
+#     X_3_embedding = pred.cpu().numpy().mean(axis=0)
+#     X_3_embedding = np.expand_dims(X_3_embedding, axis=0)
     
-    X_4 = torch.from_numpy(X_4)
-    X_4.to(device, dtype=torch.float)
-    pred = model(X_4)
-    X_4_embedding = pred.cpu().numpy().mean(axis=0)
-    X_4_embedding = np.expand_dims(X_4_embedding, axis=0)
+#     X_4 = torch.from_numpy(X_4)
+#     X_4.to(device, dtype=torch.float)
+#     pred = model(X_4)
+#     X_4_embedding = pred.cpu().numpy().mean(axis=0)
+#     X_4_embedding = np.expand_dims(X_4_embedding, axis=0)
     
-    X_5 = torch.from_numpy(X_5)
-    X_5.to(device, dtype=torch.float)
-    pred = model(X_5)
-    X_5_embedding = pred.cpu().numpy().mean(axis=0)
-    X_5_embedding = np.expand_dims(X_5_embedding, axis=0)
+#     X_5 = torch.from_numpy(X_5)
+#     X_5.to(device, dtype=torch.float)
+#     pred = model(X_5)
+#     X_5_embedding = pred.cpu().numpy().mean(axis=0)
+#     X_5_embedding = np.expand_dims(X_5_embedding, axis=0)
     
-    X_6 = torch.from_numpy(X_6)
-    X_6.to(device, dtype=torch.float)
-    pred = model(X_6)
-    X_6_embedding = pred.cpu().numpy().mean(axis=0)
-    X_6_embedding = np.expand_dims(X_6_embedding, axis=0)
+#     X_6 = torch.from_numpy(X_6)
+#     X_6.to(device, dtype=torch.float)
+#     pred = model(X_6)
+#     X_6_embedding = pred.cpu().numpy().mean(axis=0)
+#     X_6_embedding = np.expand_dims(X_6_embedding, axis=0)
 
 
-X_embedding = np.concatenate((X_1_embedding, X_2_embedding, X_3_embedding, X_4_embedding, X_5_embedding, X_6_embedding), axis=0)
+# X_embedding = np.concatenate((X_1_embedding, X_2_embedding, X_3_embedding, X_4_embedding, X_5_embedding, X_6_embedding), axis=0)
 
-# X_embedding = np.array([X_1_embedding, X_2_embedding, X_3_embedding, X_4_embedding, X_5_embedding, X_6_embedding])
+# # X_embedding = np.array([X_1_embedding, X_2_embedding, X_3_embedding, X_4_embedding, X_5_embedding, X_6_embedding])
 
-y_embedding = np.concatenate((y_1, y_2, y_3, y_4, y_5, y_6), axis=0)
+# y_embedding = np.concatenate((y_1, y_2, y_3, y_4, y_5, y_6), axis=0)
 
-# y_embedding = np.array([y_1.mean(), y_2.mean(), y_3.mean(), y_4.mean(), y_5.mean(), y_6.mean()])
-n_components = 2
-tsne = TSNE(n_components)
+# # y_embedding = np.array([y_1.mean(), y_2.mean(), y_3.mean(), y_4.mean(), y_5.mean(), y_6.mean()])
+# n_components = 2
+# tsne = TSNE(n_components)
 
-tsne_result = tsne.fit_transform(X_embedding)
+# tsne_result = tsne.fit_transform(X_embedding)
 
-tsne_result_df = pd.DataFrame({'tsne_1': tsne_result[:,0], 'tsne_2': tsne_result[:,1], 'label': y_embedding})
-fig, ax = plt.subplots(1)
-sns.scatterplot(x='tsne_1', y='tsne_2', hue='label', data=tsne_result_df, ax=ax,s=120)
-lim = (tsne_result.min()-5, tsne_result.max()+5)
-ax.set_xlim(lim)
-ax.set_ylim(lim)
-ax.set_aspect('equal')
-ax.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.0)
-# %%
-with torch.no_grad():
-    X_0 = torch.from_numpy(X_0)
-    X_0.to(device, dtype=torch.float)
-    pred = model(X_0)
-    X_0_embedding = pred.cpu().numpy()
+# tsne_result_df = pd.DataFrame({'tsne_1': tsne_result[:,0], 'tsne_2': tsne_result[:,1], 'label': y_embedding})
+# fig, ax = plt.subplots(1)
+# sns.scatterplot(x='tsne_1', y='tsne_2', hue='label', data=tsne_result_df, ax=ax,s=120)
+# lim = (tsne_result.min()-5, tsne_result.max()+5)
+# ax.set_xlim(lim)
+# ax.set_ylim(lim)
+# ax.set_aspect('equal')
+# ax.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.0)
+# # %%
+# with torch.no_grad():
+#     X_0 = torch.from_numpy(X_0)
+#     X_0.to(device, dtype=torch.float)
+#     pred = model(X_0)
+#     X_0_embedding = pred.cpu().numpy()
     
-    X_7 = torch.from_numpy(X_7)
-    X_7.to(device, dtype=torch.float)
-    pred = model(X_7)
-    X_7_embedding = pred.cpu().numpy()
+#     X_7 = torch.from_numpy(X_7)
+#     X_7.to(device, dtype=torch.float)
+#     pred = model(X_7)
+#     X_7_embedding = pred.cpu().numpy()
     
 
 
-X_embedding = np.concatenate((X_0_embedding, X_7_embedding), axis=0)
-y_embedding = np.concatenate((y_0, y_7), axis=0)
-n_components = 2
-tsne = TSNE(n_components)
+# X_embedding = np.concatenate((X_0_embedding, X_7_embedding), axis=0)
+# y_embedding = np.concatenate((y_0, y_7), axis=0)
+# n_components = 2
+# tsne = TSNE(n_components)
 
-tsne_result = tsne.fit_transform(X_embedding)
+# tsne_result = tsne.fit_transform(X_embedding)
 
-tsne_result_df = pd.DataFrame({'tsne_1': tsne_result[:,0], 'tsne_2': tsne_result[:,1], 'label': y_embedding})
-fig, ax = plt.subplots(1)
-sns.scatterplot(x='tsne_1', y='tsne_2', hue='label', data=tsne_result_df, ax=ax,s=120)
-lim = (tsne_result.min()-5, tsne_result.max()+5)
-ax.set_xlim(lim)
-ax.set_ylim(lim)
-ax.set_aspect('equal')
-ax.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.0)
+# tsne_result_df = pd.DataFrame({'tsne_1': tsne_result[:,0], 'tsne_2': tsne_result[:,1], 'label': y_embedding})
+# fig, ax = plt.subplots(1)
+# sns.scatterplot(x='tsne_1', y='tsne_2', hue='label', data=tsne_result_df, ax=ax,s=120)
+# lim = (tsne_result.min()-5, tsne_result.max()+5)
+# ax.set_xlim(lim)
+# ax.set_ylim(lim)
+# ax.set_aspect('equal')
+# ax.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.0)
 # %%

@@ -2,8 +2,8 @@
 Author: Qi7
 Date: 2023-04-06 21:23:30
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-04-08 11:45:44
-Description: main function for doing our task
+LastEditTime: 2023-05-24 16:27:29
+Description: binary classification using jiabao's pv data.
 '''
 #%%
 

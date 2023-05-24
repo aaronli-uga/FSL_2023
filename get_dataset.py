@@ -2,49 +2,51 @@
 Author: Qi7
 Date: 2023-05-17 16:29:18
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-05-22 13:47:42
+LastEditTime: 2023-05-24 16:20:20
 Description: using sliding window algorithm to convert the csv to the trainable data and do the normalization.
 '''
 import pandas as pd
 import numpy as np
 from util import sliding_windows
 
-# files = ["attack11", "attack16", "attack18", "attack27", "attack50", "attack58", "attack78"]
-# for file in files:
-#     data = f"dataset/8cases/query_set/{file}.csv"
-#     df = pd.read_csv(data)
-#     data_npy = df.to_numpy()
-#     o1, _ = sliding_windows(data_npy, sub_window_size=2000, step_size=20)
-#     np.save(f"dataset/8cases/query_set/X_{file}.npy", o1)
+files = ["normal", "attack10", "attack15", "attack17", "attack26", "attack49", "attack57", "attack77"]
+for file in files:
+    data = f"dataset/8cases_jinan/raw_dataset_training/{file}.csv"
+    df = pd.read_csv(data)
+    data_npy = df.to_numpy()
+    o1, _ = sliding_windows(data_npy, sub_window_size=2000, step_size=20)
+    np.save(f"dataset/8cases_jinan/training_set/X_{file}.npy", o1)
 
-# X_8 = np.load("dataset/8cases/query_set/X_attack11.npy")
-# X_9 = np.load("dataset/8cases/query_set/X_attack16.npy")
-# X_10 = np.load("dataset/8cases/query_set/X_attack18.npy")
-# X_11 = np.load("dataset/8cases/query_set/X_attack27.npy")
-# X_12 = np.load("dataset/8cases/query_set/X_attack50.npy")
-# X_13 = np.load("dataset/8cases/query_set/X_attack58.npy")
-# X_14 = np.load("dataset/8cases/query_set/X_attack78.npy")
+X_0 = np.load("dataset/8cases_jinan/training_set/X_normal.npy")
+X_1 = np.load("dataset/8cases_jinan/training_set/X_attack10.npy")
+X_2 = np.load("dataset/8cases_jinan/training_set/X_attack15.npy")
+X_3 = np.load("dataset/8cases_jinan/training_set/X_attack17.npy")
+X_4 = np.load("dataset/8cases_jinan/training_set/X_attack26.npy")
+X_5 = np.load("dataset/8cases_jinan/training_set/X_attack49.npy")
+X_6 = np.load("dataset/8cases_jinan/training_set/X_attack57.npy")
+X_7 = np.load("dataset/8cases_jinan/training_set/X_attack77.npy")
 
-# y_8 = np.ones(X_8.shape[0]) * 8
-# y_9 = np.ones(X_9.shape[0]) * 9
-# y_10 = np.ones(X_10.shape[0]) * 10
-# y_11 = np.ones(X_11.shape[0]) * 11
-# y_12 = np.ones(X_12.shape[0]) * 12
-# y_13 = np.ones(X_13.shape[0]) * 13
-# y_14 = np.ones(X_14.shape[0]) * 14
+y_0 = np.ones(X_0.shape[0]) * 0
+y_1 = np.ones(X_1.shape[0]) * 1
+y_2 = np.ones(X_2.shape[0]) * 2
+y_3 = np.ones(X_3.shape[0]) * 3
+y_4 = np.ones(X_4.shape[0]) * 4
+y_5 = np.ones(X_5.shape[0]) * 5
+y_6 = np.ones(X_6.shape[0]) * 6
+y_7 = np.ones(X_7.shape[0]) * 7
 
-# X = np.concatenate((X_8, X_9, X_10, X_11, X_12, X_13, X_14), axis=0)
+X = np.concatenate((X_0, X_1, X_2, X_3, X_4, X_5, X_6, X_7), axis=0)
 
-X = np.load("dataset/8cases/X.npy")
+# X = np.load("dataset/8cases_jinan/training_set/X.npy")
 X = np.transpose(X, (0, 2, 1))
-# np.save(f"dataset/8cases/query_set/X.npy", X)
+np.save(f"dataset/8cases_jinan/training_set/X.npy", X)
 
-# y = np.concatenate((y_8, y_9, y_10, y_11, y_12, y_13, y_14))
+y = np.concatenate((y_0, y_1, y_2, y_3, y_4, y_5, y_6, y_7))
 # Standard Normalization ((X-mean) / std)
 for i in range(X.shape[0]):
     for j in range(X.shape[1]):
         X[i,j,:] = (X[i,j,:] - X[i,j,:].mean()) / X[i,j,:].std()
 
 
-np.save(f"dataset/8cases/X_norm.npy", X)
-# np.save(f"dataset/8cases/query_set/y.npy", y)
+np.save(f"dataset/8cases_jinan/training_set/X_norm.npy", X)
+np.save(f"dataset/8cases_jinan/training_set/y.npy", y)

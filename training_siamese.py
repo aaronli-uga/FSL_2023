@@ -2,8 +2,8 @@
 Author: Qi7
 Date: 2023-05-23 17:06:32
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-05-24 01:06:27
-Description: 
+LastEditTime: 2023-05-24 16:49:22
+Description: training the SNN model
 '''
 import numpy as np
 import matplotlib.pyplot as plt
@@ -20,8 +20,8 @@ from model import SiameseNet
 from training import model_train_multiclass
 
 save_model_path = "saved_models/snn/"
-X = np.load('dataset/8cases/X_norm.npy')
-y = np.load('dataset/8cases/y.npy')
+X = np.load('dataset/8cases_jinan/training_set/X_norm.npy')
+y = np.load('dataset/8cases_jinan/training_set/y.npy')
 
 X_train, X_cv, y_train, y_cv = train_test_split(X, y, train_size=0.75, test_size=0.25, shuffle=True, random_state=27)
 trainset = SiameseDataset(X_train, y_train)
@@ -58,15 +58,15 @@ for epoch in range(num_epochs):
     # training
     model.train()
     total_loss = 0.0
-    for batch_idx, (img1, img2, img3, label_pos, label_neg) in enumerate(data_loader):
-        img1, img2, img3 = img1.to(device), img2.to(device), img3.to(device)
+    for batch_idx, (sample1, sample2, sample3, label_pos, label_neg) in enumerate(data_loader):
+        sample1, sample2, sample3 = sample1.to(device), sample2.to(device), sample3.to(device)
         label_pos, label_neg = label_pos.to(device), label_neg.to(device)
         
         optimizer.zero_grad()
         
         # Forward pass
-        output1, output2 = model(img1, img2)
-        _, output3 = model(img1, img3)
+        output1, output2 = model(sample1, sample2)
+        _, output3 = model(sample1, sample3)
         
         # Compute the contrastive loss
         # euclidean_distance_p = nn.functional.pairwise_distance(output1, output2)
@@ -97,12 +97,12 @@ for epoch in range(num_epochs):
     # validation
     model.eval()
     total_loss = 0.0
-    for batch_idx, (img1, img2, img3, label_pos, label_neg) in enumerate(test_data_loader):
-        img1, img2, img3 = img1.to(device), img2.to(device), img3.to(device)
+    for batch_idx, (sample1, sample2, sample3, label_pos, label_neg) in enumerate(test_data_loader):
+        sample1, sample2, sample3 = sample1.to(device), sample2.to(device), sample3.to(device)
         label_pos, label_neg = label_pos.to(device), label_neg.to(device)
         
-        output1, output2 = model(img1, img2)
-        _, output3 = model(img1, img3)
+        output1, output2 = model(sample1, sample2)
+        _, output3 = model(sample1, sample3)
         loss_contrastive = triplet_loss(output1, output2, output3)
         total_loss += loss_contrastive.item()
     

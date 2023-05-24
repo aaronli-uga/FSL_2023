@@ -2,8 +2,8 @@
 Author: Qi7
 Date: 2023-05-16 23:28:18
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-05-22 23:08:38
-Description: 
+LastEditTime: 2023-05-24 16:48:43
+Description: query on model not trained by snn. Simply remove the last layer of the model to get the feature embedding.
 '''
 #%%
 import numpy as np

@@ -2,8 +2,8 @@
 Author: Qi7
 Date: 2023-04-08 11:54:41
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-05-23 17:07:15
-Description: main function for doing the multiclass classification
+LastEditTime: 2023-05-24 16:34:58
+Description: main function for doing the multiclass classification. Both jinan and jiabao's data acheive good results using CNN (with resblocks)
 '''
 #%%
 

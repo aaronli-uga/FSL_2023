@@ -2,10 +2,9 @@
 Author: Qi7
 Date: 2023-05-17 16:24:45
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-05-17 16:48:28
-Description: 
+LastEditTime: 2023-05-24 15:37:36
+Description: utils function for sliding window
 '''
-import torch
 import numpy as np
 
 def sliding_windows(array, sub_window_size, step_size, start_index=0):
@@ -27,5 +26,5 @@ def sliding_windows(array, sub_window_size, step_size, start_index=0):
 
 
 # testing
-x = [[1,11,111,1111],[5,6,7,8],[9,10,11,12],[2,3,4,5],[5,4,3,2],[2,3,4,1],[4,5,3,2],[2,3,1,4],[2,3,4,1],[2,3,4,1]]
-o1, o2 = sliding_windows(x, sub_window_size=3, step_size=1)
+# x = [[1,11,111,1111],[5,6,7,8],[9,10,11,12],[2,3,4,5],[5,4,3,2],[2,3,4,1],[4,5,3,2],[2,3,1,4],[2,3,4,1],[2,3,4,1]]
+# o1, o2 = sliding_windows(x, sub_window_size=3, step_size=1)

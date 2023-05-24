@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-04-06 21:32:59
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-05-18 14:10:41
+LastEditTime: 2023-05-23 16:47:16
 Description: deep learning models definition
 '''
 import torch
@@ -110,6 +110,59 @@ class QNN(nn.Module):
         x = self.flatten(x)
         x = self.fc(x)
         return x
+
+
+class SiameseNet(nn.Module):
+    def __init__(self, n_input_channels, n_output_channels, 
+                 kernel_size, stride, n_classes, dropout=0.5) -> None:
+        super(SiameseNet, self).__init__()
+        self.conv1 = nn.Conv1d(n_input_channels, n_output_channels, kernel_size = 7,
+                               stride = stride, padding = 'same')
+        self.batchnorm1 = nn.BatchNorm1d(n_output_channels)
+        self.relu1 = nn.ReLU()
+        self.max_pooling = nn.MaxPool1d(2)
+        self.resblock1 = ResBlock(n_output_channels, n_output_channels, 
+                                 kernel_size, stride = 2, n_pad = 1, 
+                                 dropout=dropout)
+        self.resblock2 = ResBlock(n_output_channels, n_output_channels, 
+                                 kernel_size, stride = 2, n_pad = 1, 
+                                 dropout=dropout)
+        self.resblock3 = ResBlock(n_output_channels, n_output_channels, 
+                                 kernel_size, stride = 2, n_pad = 1, 
+                                 dropout=dropout)
+        self.resblock4 = ResBlock(n_output_channels, n_output_channels, 
+                                 kernel_size, stride = 2, n_pad = 0, 
+                                 dropout=dropout)
+        self.resblock5 = ResBlock(n_output_channels, n_output_channels, 
+                                 kernel_size, stride = 2, n_pad = 1, 
+                                 dropout=dropout)
+        self.resblock6 = ResBlock(n_output_channels, n_output_channels, 
+                                 kernel_size, stride = 2, n_pad = 0, 
+                                 dropout=dropout)
+        self.flatten = nn.Flatten()
+        self.fc = nn.Linear(int(64 * 15), n_classes)
+    
+    def forward_once(self, x):
+        x = self.conv1(x)
+        x = self.batchnorm1(x)
+        x = self.relu1(x)
+        x = self.max_pooling(x)
+        x = self.resblock1(x)
+        x = self.resblock2(x)
+        x = self.resblock3(x)
+        x = self.resblock4(x)
+        x = self.resblock5(x)
+        x = self.resblock6(x)
+        x = self.flatten(x)
+        return x
+
+    def forward(self, input1, input2):
+        # forward pass through both branches of the network
+        output1 = self.forward_once(input1)
+        output2 = self.forward_once(input2)
+        return output1, output2
+
+
 
 class PrototypicalNetworks(nn.Module):
     def __init__(self, backbone: nn.Module) -> None:

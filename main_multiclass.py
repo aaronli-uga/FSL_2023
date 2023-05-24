@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-04-08 11:54:41
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-05-18 19:26:29
+LastEditTime: 2023-05-23 17:07:15
 Description: main function for doing the multiclass classification
 '''
 #%%
@@ -19,7 +19,7 @@ from loader import waveformDataset
 from model import LSTM, QNN
 from training import model_train_multiclass
 
-save_model_path = "saved_models/"
+save_model_path = "saved_models/snn/"
 X = np.load('dataset/8cases/X_norm.npy')
 y = np.load('dataset/8cases/y.npy')
 # X = X[np.where((y == 0) | (y == 8) | (y == 7))[0]]
@@ -40,8 +40,8 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.8, test_s
 X_train, X_cv, y_train, y_cv = train_test_split(X_train, y_train, train_size=0.75, test_size=0.25, shuffle=True, random_state=27)
 
 # save test dataset for ultimate testing.
-np.save("X_test.npy", X_test)
-np.save("y_test.npy", y_test)
+# np.save("X_test_new.npy", X_test)
+# np.save("y_test_new.npy", y_test)
 
 trainset = waveformDataset(X_train, y_train)
 validset = waveformDataset(X_cv, y_cv)
@@ -77,5 +77,5 @@ model_train_multiclass(
     history=history
 )
 
-torch.save(model.state_dict(), save_model_path + f"8cases_multiclass_epochs{num_epochs}_lr_{learning_rate}_bs_{batch_size}_best_model.pth")
-np.save(save_model_path + f"8cases_multiclass_epochs{num_epochs}_lr_{learning_rate}_bs_{batch_size}_history.npy", history)
+torch.save(model.state_dict(), save_model_path + f"test_8cases_multiclass_epochs{num_epochs}_lr_{learning_rate}_bs_{batch_size}_best_model.pth")
+np.save(save_model_path + f"test_8cases_multiclass_epochs{num_epochs}_lr_{learning_rate}_bs_{batch_size}_history.npy", history)

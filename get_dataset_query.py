@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-06-01 17:15:30
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-06-01 17:25:52
+LastEditTime: 2023-06-01 17:36:57
 Description: 
 '''
 import pandas as pd
@@ -25,12 +25,12 @@ X_11 = np.load("dataset/8cases_jinan/new_query_set/X_attack51.npy")
 X_12 = np.load("dataset/8cases_jinan/new_query_set/X_attack55.npy")
 X_13 = np.load("dataset/8cases_jinan/new_query_set/X_attack66.npy")
 
-y_8 = np.ones(X_8.shape[0]) * 6
-y_9 = np.ones(X_9.shape[0]) * 7
-y_10 = np.ones(X_10.shape[0]) * 8
-y_11 = np.ones(X_11.shape[0]) * 9
-y_12 = np.ones(X_12.shape[0]) * 10
-y_13 = np.ones(X_13.shape[0]) * 11
+y_8 = np.ones(X_8.shape[0]) * 8
+y_9 = np.ones(X_9.shape[0]) * 9
+y_10 = np.ones(X_10.shape[0]) * 10
+y_11 = np.ones(X_11.shape[0]) * 11
+y_12 = np.ones(X_12.shape[0]) * 12
+y_13 = np.ones(X_13.shape[0]) * 13
 
 X = np.concatenate((X_8, X_9, X_10, X_11, X_12, X_13), axis=0)
 

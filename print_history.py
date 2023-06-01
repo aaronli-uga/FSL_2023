@@ -2,15 +2,20 @@
 Author: Qi7
 Date: 2023-04-07 23:27:47
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-05-24 11:13:16
+LastEditTime: 2023-06-01 15:50:09
 Description: print out the history information of trained model, such as test loss and test f1 score.
 '''
 #%%
 import numpy as np
 from matplotlib import pyplot as plt
 
-# history = np.load("saved_models/8cases_multiclass_epochs200_lr_0.001_bs_256_history.npy", allow_pickle=True).item()
-history = np.load("saved_models/snn/snn_8cases_epochs10_lr_0.001_bs_256_history.npy", allow_pickle=True).item()
+# trained_model = "saved_models/snn/2_loss_last_round_2d_snn_margin2_8cases_epochs30_lr_0.001_bs_128_best_model.pth"
+# trained_model = "saved_models/snn/new_2_loss_2d_snn_margin2_8cases_epochs30_lr_0.001_bs_128_history.npy"
+trained_model = "saved_models/new_without_snn/multiclass_epochs50_lr_0.001_bs_256_history.npy"
+
+history = np.load(trained_model, allow_pickle=True).item()
+
+
 # %%
 # fig, ax = plt.subplots(figsize=(12,6))
 # ax.plot(history["test_f1"])
@@ -32,5 +37,5 @@ ax.set(title='loss', xlabel='Epochs', ylabel='loss')
 # find the index of max f1 score
 np.array(history['test_loss']).argmin()
 # %%
-np.array(history['test_f1_all'][7])
+np.array(history['test_f1_all'][42])
 # %%

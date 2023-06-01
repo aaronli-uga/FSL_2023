@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-04-07 10:41:35
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-05-23 17:36:53
+LastEditTime: 2023-05-25 17:22:40
 Description: dataloader definition
 '''
 from torch.utils.data import Dataset
@@ -33,7 +33,7 @@ class SiameseDataset(Dataset):
         negative_indices = torch.where(self.targets != target1)[0]
         sample2 = self.data[positive_indices[torch.randint(len(positive_indices), (1,))]][0]
         sample3 = self.data[negative_indices[torch.randint(len(negative_indices), (1,))]][0]
-        return sample1, sample2, sample3, torch.Tensor([1]), torch.Tensor([0])
+        return sample1, target1, sample2, sample3, torch.Tensor([1]), torch.Tensor([0])
     
     def __len__(self):
         return len(self.data)

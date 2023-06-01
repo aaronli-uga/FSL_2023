@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-05-16 23:28:18
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-05-24 16:48:43
+LastEditTime: 2023-06-01 16:30:17
 Description: query on model not trained by snn. Simply remove the last layer of the model to get the feature embedding.
 '''
 #%%
@@ -339,94 +339,3 @@ dis_query_14 = [
         np.linalg.norm(query_14_embedding - support_14_embedding),
     ]
 print("query 14, attack number:", dis_query_14.index(min(dis_query_14)) + 8)
-
-#%% Tsne results
-
-with torch.no_grad():
-    X_1 = torch.from_numpy(X_1)
-    X_1.to(device, dtype=torch.float)
-    pred = model(X_1)
-    X_1_embedding = pred.cpu().numpy().mean(axis=0)
-    X_1_embedding = np.expand_dims(X_1_embedding, axis=0)
-    
-    X_2 = torch.from_numpy(X_2)
-    X_2.to(device, dtype=torch.float)
-    pred = model(X_2)
-    X_2_embedding = pred.cpu().numpy().mean(axis=0)
-    X_2_embedding = np.expand_dims(X_2_embedding, axis=0)
-    
-    X_3 = torch.from_numpy(X_3)
-    X_3.to(device, dtype=torch.float)
-    pred = model(X_3)
-    X_3_embedding = pred.cpu().numpy().mean(axis=0)
-    X_3_embedding = np.expand_dims(X_3_embedding, axis=0)
-    
-    X_4 = torch.from_numpy(X_4)
-    X_4.to(device, dtype=torch.float)
-    pred = model(X_4)
-    X_4_embedding = pred.cpu().numpy().mean(axis=0)
-    X_4_embedding = np.expand_dims(X_4_embedding, axis=0)
-    
-    X_5 = torch.from_numpy(X_5)
-    X_5.to(device, dtype=torch.float)
-    pred = model(X_5)
-    X_5_embedding = pred.cpu().numpy().mean(axis=0)
-    X_5_embedding = np.expand_dims(X_5_embedding, axis=0)
-    
-    X_6 = torch.from_numpy(X_6)
-    X_6.to(device, dtype=torch.float)
-    pred = model(X_6)
-    X_6_embedding = pred.cpu().numpy().mean(axis=0)
-    X_6_embedding = np.expand_dims(X_6_embedding, axis=0)
-
-
-X_embedding = np.concatenate((X_1_embedding, X_2_embedding, X_3_embedding, X_4_embedding, X_5_embedding, X_6_embedding), axis=0)
-
-# X_embedding = np.array([X_1_embedding, X_2_embedding, X_3_embedding, X_4_embedding, X_5_embedding, X_6_embedding])
-
-y_embedding = np.concatenate((y_1, y_2, y_3, y_4, y_5, y_6), axis=0)
-
-# y_embedding = np.array([y_1.mean(), y_2.mean(), y_3.mean(), y_4.mean(), y_5.mean(), y_6.mean()])
-n_components = 2
-tsne = TSNE(n_components)
-
-tsne_result = tsne.fit_transform(X_embedding)
-
-tsne_result_df = pd.DataFrame({'tsne_1': tsne_result[:,0], 'tsne_2': tsne_result[:,1], 'label': y_embedding})
-fig, ax = plt.subplots(1)
-sns.scatterplot(x='tsne_1', y='tsne_2', hue='label', data=tsne_result_df, ax=ax,s=120)
-lim = (tsne_result.min()-5, tsne_result.max()+5)
-ax.set_xlim(lim)
-ax.set_ylim(lim)
-ax.set_aspect('equal')
-ax.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.0)
-# %%
-with torch.no_grad():
-    X_0 = torch.from_numpy(X_0)
-    X_0.to(device, dtype=torch.float)
-    pred = model(X_0)
-    X_0_embedding = pred.cpu().numpy()
-    
-    X_7 = torch.from_numpy(X_7)
-    X_7.to(device, dtype=torch.float)
-    pred = model(X_7)
-    X_7_embedding = pred.cpu().numpy()
-    
-
-
-X_embedding = np.concatenate((X_0_embedding, X_7_embedding), axis=0)
-y_embedding = np.concatenate((y_0, y_7), axis=0)
-n_components = 2
-tsne = TSNE(n_components)
-
-tsne_result = tsne.fit_transform(X_embedding)
-
-tsne_result_df = pd.DataFrame({'tsne_1': tsne_result[:,0], 'tsne_2': tsne_result[:,1], 'label': y_embedding})
-fig, ax = plt.subplots(1)
-sns.scatterplot(x='tsne_1', y='tsne_2', hue='label', data=tsne_result_df, ax=ax,s=120)
-lim = (tsne_result.min()-5, tsne_result.max()+5)
-ax.set_xlim(lim)
-ax.set_ylim(lim)
-ax.set_aspect('equal')
-ax.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.0)
-# %%

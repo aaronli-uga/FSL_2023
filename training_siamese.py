@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-05-23 17:06:32
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-05-24 16:49:22
+LastEditTime: 2023-05-25 20:04:29
 Description: training the SNN model
 '''
 import numpy as np
@@ -14,6 +14,7 @@ from sklearn.preprocessing import normalize
 from sklearn.model_selection import StratifiedKFold, train_test_split
 import torch.nn as nn
 import copy
+import tqdm, time
 
 from loader import SiameseDataset
 from model import SiameseNet
@@ -30,59 +31,58 @@ validset = SiameseDataset(X_cv, y_cv)
 # Hyper parameters
 batch_size = 128
 learning_rate = 0.001
-num_epochs = 50
+num_epochs = 30
 history = dict(test_loss=[], train_loss=[], test_acc=[], test_f1=[], test_f1_all=[])
 
 device = torch.device("cuda:2" if torch.cuda.is_available() else "cpu")
 
 
 data_loader = DataLoader(trainset, batch_size=batch_size, shuffle=True)
-test_data_loader = DataLoader(trainset, batch_size=batch_size, shuffle=True)
+test_data_loader = DataLoader(validset, batch_size=batch_size, shuffle=True)
 
 model = SiameseNet(
-                n_input_channels=6,
-                n_output_channels=64,
-                kernel_size=3,
-                stride=1,
-                n_classes=8
-            )
+            n_input_channels=6,
+            n_output_channels=64,
+            kernel_size=3,
+            stride=1,
+            n_classes=8
+        )
 
 model.to(device)
 optimizer = optim.Adam(model.parameters(), lr=learning_rate)
-margin = 10.0 # parameters for penalizing
+margin = 2 # parameters for penalizing
 triplet_loss = nn.TripletMarginLoss(margin=margin, p=2)
+classification_loss = nn.CrossEntropyLoss()
 best_loss = np.inf
 best_weights = None
 
+start = time.time()
 for epoch in range(num_epochs):
     # training
     model.train()
     total_loss = 0.0
-    for batch_idx, (sample1, sample2, sample3, label_pos, label_neg) in enumerate(data_loader):
+    # for batch_idx, (sample1, sample2, sample3, label_pos, label_neg) in tqdm.tqdm(data_loader, desc=f"Epoch {epoch}"):
+    for batch_idx, (sample1, target1, sample2, sample3, label_pos, label_neg) in enumerate(data_loader):
         sample1, sample2, sample3 = sample1.to(device), sample2.to(device), sample3.to(device)
-        label_pos, label_neg = label_pos.to(device), label_neg.to(device)
+        label_anchor, label_pos, label_neg = target1.to(device, dtype=torch.long), label_pos.to(device), label_neg.to(device)
         
         optimizer.zero_grad()
         
         # Forward pass
-        output1, output2 = model(sample1, sample2)
-        _, output3 = model(sample1, sample3)
+        output1_e, output1_c, output2_e, output2_c = model(sample1, sample2)
+        _, _, output3_e, output3_c = model(sample1, sample3)
         
-        # Compute the contrastive loss
-        # euclidean_distance_p = nn.functional.pairwise_distance(output1, output2)
-        # euclidean_distance_n = nn.functional.pairwise_distance(output1, output3)
-        
+        # classification loss
+        loss_classification = classification_loss(output1_c, label_anchor)
         # triple loss
-        loss_contrastive = triplet_loss(output1, output2, output3)
-        
-        # loss_contrastive = torch.mean(label_pos * torch.pow(euclidean_distance, 2) +
-                                    #   label_neg * torch.pow(torch.clamp(margin - euclidean_distance, min=0.0), 2))
-        
+        loss_contrastive = triplet_loss(output1_e, output2_e, output3_e)
+
+        combined_loss = loss_classification + 0.2 * loss_contrastive
         # Backward pass and optimization
-        loss_contrastive.backward()
+        combined_loss.backward()
         optimizer.step()
         
-        total_loss += loss_contrastive.item()
+        total_loss += combined_loss.item()
         
         if batch_idx % 20 == 0:
             print('Epoch [{}/{}], Batch [{}/{}], Loss: {:.4f}'
@@ -97,14 +97,17 @@ for epoch in range(num_epochs):
     # validation
     model.eval()
     total_loss = 0.0
-    for batch_idx, (sample1, sample2, sample3, label_pos, label_neg) in enumerate(test_data_loader):
+    for batch_idx, (sample1, target1, sample2, sample3, label_pos, label_neg) in enumerate(test_data_loader):
         sample1, sample2, sample3 = sample1.to(device), sample2.to(device), sample3.to(device)
-        label_pos, label_neg = label_pos.to(device), label_neg.to(device)
+        label_anchor, label_pos, label_neg = target1.to(device, dtype=torch.long), label_pos.to(device), label_neg.to(device)
         
-        output1, output2 = model(sample1, sample2)
-        _, output3 = model(sample1, sample3)
-        loss_contrastive = triplet_loss(output1, output2, output3)
-        total_loss += loss_contrastive.item()
+        output1_e, output1_c, output2_e, output2_c = model(sample1, sample2)
+        _, _, output3_e, output3_c = model(sample1, sample3)
+        
+        loss_classification = classification_loss(output1_c, label_anchor)
+        loss_contrastive = triplet_loss(output1_e, output2_e, output3_e)
+        combined_loss = loss_classification + 0.2 * loss_contrastive
+        total_loss += combined_loss.item()
     
     test_loss = total_loss / len(test_data_loader)
     if best_loss > test_loss:
@@ -115,9 +118,13 @@ for epoch in range(num_epochs):
     print('Epoch [{}/{}], Average Test Loss: {:.4f}'
           .format(epoch+1, num_epochs, test_loss))
 
+end = time.time()
+print(f"Training is done. Total time: {end - start} seconds")
+
+torch.save(model.state_dict(), save_model_path + f"new_2_loss_last_round_2d_snn_margin{margin}_8cases_epochs{num_epochs}_lr_{learning_rate}_bs_{batch_size}_best_model.pth")
 model.load_state_dict(best_weights)
-torch.save(model.state_dict(), save_model_path + f"snn_margin{margin}_8cases_epochs{num_epochs}_lr_{learning_rate}_bs_{batch_size}_best_model.pth")
-np.save(save_model_path + f"snn_margin{margin}_8cases_epochs{num_epochs}_lr_{learning_rate}_bs_{batch_size}_history.npy", history)
+torch.save(model.state_dict(), save_model_path + f"new_2_loss_2d_snn_margin{margin}_8cases_epochs{num_epochs}_lr_{learning_rate}_bs_{batch_size}_best_model.pth")
+np.save(save_model_path + f"new_2_loss_2d_snn_margin{margin}_8cases_epochs{num_epochs}_lr_{learning_rate}_bs_{batch_size}_history.npy", history)
 
 
 

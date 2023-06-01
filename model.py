@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-04-06 21:32:59
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-05-24 16:35:18
+LastEditTime: 2023-05-30 14:42:57
 Description: deep learning models definition
 '''
 import torch
@@ -94,7 +94,8 @@ class QNN(nn.Module):
                                  kernel_size, stride = 2, n_pad = 0, 
                                  dropout=dropout)
         self.flatten = nn.Flatten()
-        self.fc = nn.Linear(int(64 * 15), n_classes)
+        self.fc = nn.Linear(int(64 * 15), 128)
+        self.fc1 = nn.Linear(128, n_classes)
         
     def forward(self, x):
         x = self.conv1(x)
@@ -109,6 +110,7 @@ class QNN(nn.Module):
         x = self.resblock6(x)
         x = self.flatten(x)
         x = self.fc(x)
+        x = self.fc1(x)
         return x
 
 
@@ -141,6 +143,8 @@ class SiameseNet(nn.Module):
                                  dropout=dropout)
         self.flatten = nn.Flatten()
         self.fc = nn.Linear(int(64 * 15), n_classes)
+        # self.fc2 = nn.Linear(int(64 * 15), 2)
+        self.fc3 = nn.Linear(int(64 * 15), 100)
     
     def forward_once(self, x):
         x = self.conv1(x)
@@ -154,13 +158,15 @@ class SiameseNet(nn.Module):
         x = self.resblock5(x)
         x = self.resblock6(x)
         x = self.flatten(x)
-        return x
+        x_classification = self.fc(x)
+        x_embedding = self.fc3(x)
+        return x_embedding, x_classification
 
     def forward(self, input1, input2):
         # forward pass through both branches of the network
-        output1 = self.forward_once(input1)
-        output2 = self.forward_once(input2)
-        return output1, output2
+        output1_embedding, output1_classification = self.forward_once(input1)
+        output2_embedding, output2_classification = self.forward_once(input2)
+        return output1_embedding, output1_classification, output2_embedding, output2_classification
 
 
 

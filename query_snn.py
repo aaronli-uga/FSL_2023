@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-05-16 23:28:18
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-05-24 16:39:33
+LastEditTime: 2023-05-25 21:09:41
 Description: Test the accuracy from the query set. Number of shots and number of query is provided.
 '''
 #%%
@@ -41,7 +41,7 @@ y_13 = y[np.where(y == 13)[0]]
 y_14 = y[np.where(y == 14)[0]]
 
 # randomly select the support set.
-num_shots = 20
+num_shots = 10
 num_query = 100
 
 support_8 = X_8[np.random.randint(0, X_8.shape[0], num_shots)]
@@ -61,7 +61,7 @@ query_13 = X_13[np.random.randint(0, X_13.shape[0], num_query)]
 query_14 = X_14[np.random.randint(0, X_14.shape[0], num_query)]
 
 # trained_model = "saved_models/five_multiclass_best_model.pth"
-trained_model = "saved_models/snn/snn_margin10.0_8cases_epochs50_lr_0.001_bs_128_best_model.pth"
+trained_model = "saved_models/snn/new_2_loss_last_round_2d_snn_margin2_8cases_epochs30_lr_0.001_bs_128_best_model.pth"
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 model = SiameseNet(n_input_channels=6,
             n_output_channels=64,
@@ -69,78 +69,92 @@ model = SiameseNet(n_input_channels=6,
             stride=1,
             n_classes=8)
 model.load_state_dict(torch.load(trained_model))
-model.fc = torch.nn.Flatten() # get the embedding
+# model.fc = torch.nn.Flatten() # get the embedding？？
 model.to(device)
 
 with torch.no_grad():
     support_8 = torch.from_numpy(support_8)
     support_8 = support_8.to(device, dtype=torch.float)
-    pred, _ = model(support_8, support_8)
+    pred, _, _, _ = model(support_8, support_8)
+    # pred, _ = model(support_8, support_8)
     support_8_embedding = pred.cpu().numpy().mean(axis=0)
     
     support_9 = torch.from_numpy(support_9)
     support_9 = support_9.to(device, dtype=torch.float)
-    pred, _ = model(support_9, support_9)
+    # pred, _ = model(support_9, support_9)
+    pred, _, _, _ = model(support_9, support_9)
     support_9_embedding = pred.cpu().numpy().mean(axis=0)
     
     support_10 = torch.from_numpy(support_10)
     support_10 = support_10.to(device, dtype=torch.float)
-    pred, _ = model(support_10, support_10)
+    # pred, _ = model(support_10, support_10)
+    pred, _, _, _ = model(support_10, support_10)
     support_10_embedding = pred.cpu().numpy().mean(axis=0)
     
     support_11 = torch.from_numpy(support_11)
     support_11 = support_11.to(device, dtype=torch.float)
-    pred, _ = model(support_11, support_11)
+    # pred, _ = model(support_11, support_11)
+    pred, _, _, _ = model(support_11, support_11)
     support_11_embedding = pred.cpu().numpy().mean(axis=0)
     
     support_12 = torch.from_numpy(support_12)
     support_12 = support_12.to(device, dtype=torch.float)
-    pred, _ = model(support_12, support_12)
+    # pred, _ = model(support_12, support_12)
+    pred, _, _, _ = model(support_12, support_12)
     support_12_embedding = pred.cpu().numpy().mean(axis=0)
     
     support_13 = torch.from_numpy(support_13)
     support_13 = support_13.to(device, dtype=torch.float)
-    pred, _ = model(support_13, support_13)
+    # pred, _ = model(support_13, support_13)
+    pred, _, _, _ = model(support_13, support_13)
     support_13_embedding = pred.cpu().numpy().mean(axis=0)
     
     support_14 = torch.from_numpy(support_14)
     support_14 = support_14.to(device, dtype=torch.float)
-    pred, _ = model(support_14, support_14)
+    # pred, _ = model(support_14, support_14)
+    pred, _, _, _ = model(support_14, support_14)
     support_14_embedding = pred.cpu().numpy().mean(axis=0)
     
     query_8 = torch.from_numpy(query_8)
     query_8 = query_8.to(device, dtype=torch.float)
-    pred, _ = model(query_8, query_8)
+    # pred, _ = model(query_8, query_8)
+    pred, _, _, _ = model(query_8, query_8)
     query_8_embedding = pred.cpu().numpy()
     
     query_9 = torch.from_numpy(query_9)
     query_9 = query_9.to(device, dtype=torch.float)
-    pred, _ = model(query_9, query_9)
+    # pred, _ = model(query_9, query_9)
+    pred, _, _, _ = model(query_9, query_9)
     query_9_embedding = pred.cpu().numpy()
     
     query_10 = torch.from_numpy(query_10)
     query_10 = query_10.to(device, dtype=torch.float)
-    pred, _ = model(query_10, query_10)
+    # pred, _ = model(query_10, query_10)
+    pred, _, _, _ = model(query_10, query_10)
     query_10_embedding = pred.cpu().numpy()
     
     query_11 = torch.from_numpy(query_11)
     query_11 = query_11.to(device, dtype=torch.float)
-    pred, _ = model(query_11, query_11)
+    # pred, _ = model(query_11, query_11)
+    pred, _, _, _ = model(query_11, query_11)
     query_11_embedding = pred.cpu().numpy()
     
     query_12 = torch.from_numpy(query_12)
     query_12 = query_12.to(device, dtype=torch.float)
-    pred, _ = model(query_12, query_12)
+    # pred, _ = model(query_12, query_12)
+    pred, _, _, _ = model(query_12, query_12)
     query_12_embedding = pred.cpu().numpy()
     
     query_13 = torch.from_numpy(query_13)
     query_13 = query_13.to(device, dtype=torch.float)
-    pred, _ = model(query_13, query_13)
+    # pred, _ = model(query_13, query_13)
+    pred, _, _, _ = model(query_13, query_13)
     query_13_embedding = pred.cpu().numpy()
     
     query_14 = torch.from_numpy(query_14)
     query_14 = query_14.to(device, dtype=torch.float)
-    pred, _ = model(query_14, query_14)
+    # pred, _ = model(query_14, query_14)
+    pred, _, _, _ = model(query_14, query_14)
     query_14_embedding = pred.cpu().numpy()
 
 #%%

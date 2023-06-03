@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-05-23 17:06:32
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-05-25 20:04:29
+LastEditTime: 2023-06-02 15:08:11
 Description: training the SNN model
 '''
 import numpy as np
@@ -16,22 +16,22 @@ import torch.nn as nn
 import copy
 import tqdm, time
 
-from loader import SiameseDataset
+from loader import tripletDataset
 from model import SiameseNet
 from training import model_train_multiclass
 
-save_model_path = "saved_models/snn/"
-X = np.load('dataset/8cases_jinan/training_set/X_norm.npy')
-y = np.load('dataset/8cases_jinan/training_set/y.npy')
+save_model_path = "saved_models/new_snn/"
+X = np.load('dataset/8cases_jinan/new_training_set/X_norm.npy')
+y = np.load('dataset/8cases_jinan/new_training_set/y.npy')
 
 X_train, X_cv, y_train, y_cv = train_test_split(X, y, train_size=0.75, test_size=0.25, shuffle=True, random_state=27)
-trainset = SiameseDataset(X_train, y_train)
-validset = SiameseDataset(X_cv, y_cv)
+trainset = tripletDataset(X_train, y_train)
+validset = tripletDataset(X_cv, y_cv)
 
 # Hyper parameters
 batch_size = 128
 learning_rate = 0.001
-num_epochs = 30
+num_epochs = 20
 history = dict(test_loss=[], train_loss=[], test_acc=[], test_f1=[], test_f1_all=[])
 
 device = torch.device("cuda:2" if torch.cuda.is_available() else "cpu")
@@ -77,7 +77,7 @@ for epoch in range(num_epochs):
         # triple loss
         loss_contrastive = triplet_loss(output1_e, output2_e, output3_e)
 
-        combined_loss = loss_classification + 0.2 * loss_contrastive
+        combined_loss = 0 * loss_classification + loss_contrastive
         # Backward pass and optimization
         combined_loss.backward()
         optimizer.step()

@@ -2,10 +2,14 @@
 Author: Qi7
 Date: 2023-05-17 16:24:45
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-05-24 15:37:36
+LastEditTime: 2023-06-02 21:44:18
 Description: utils function for sliding window
 '''
+# %matplotlib inline
 import numpy as np
+import torch
+import matplotlib.pyplot as plt
+from sklearn.manifold import TSNE
 
 def sliding_windows(array, sub_window_size, step_size, start_index=0):
     """return the sliding window sized matrix. (preprocessing)
@@ -28,3 +32,35 @@ def sliding_windows(array, sub_window_size, step_size, start_index=0):
 # testing
 # x = [[1,11,111,1111],[5,6,7,8],[9,10,11,12],[2,3,4,5],[5,4,3,2],[2,3,4,1],[4,5,3,2],[2,3,1,4],[2,3,4,1],[2,3,4,1]]
 # o1, o2 = sliding_windows(x, sub_window_size=3, step_size=1)
+
+mnist_classes = ['0', '1', '2', '3', '4', '5', '6', '7']
+colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728',
+              '#9467bd', '#8c564b', '#e377c2', '#7f7f7f']
+
+def plot_embeddings(embeddings, targets, xlim=None, ylim=None):
+    tsne = TSNE(n_components = 2, random_state=27)
+    embeddings = tsne.fit_transform(embeddings)
+    plt.figure(figsize=(10,10))
+    for i in range(8):
+        inds = np.where(targets==i)[0]
+        plt.scatter(embeddings[inds,0], embeddings[inds,1], alpha=0.5, color=colors[i])
+    if xlim:
+        plt.xlim(xlim[0], xlim[1])
+    if ylim:
+        plt.ylim(ylim[0], ylim[1])
+    plt.legend(mnist_classes)
+
+
+def extract_embeddings(dataloader, model, device):
+    with torch.no_grad():
+        model.to(device)
+        model.eval()
+        embeddings = np.zeros((len(dataloader.dataset), 32))
+        labels = np.zeros(len(dataloader.dataset))
+        k = 0
+        for samples, target in dataloader:
+            samples = samples.to(device, dtype=torch.float32)
+            embeddings[k:k+len(samples)] = model.get_embedding(samples).data.cpu().numpy()
+            labels[k:k+len(samples)] = target.numpy()
+            k += len(samples)
+    return embeddings, labels

@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-04-07 11:13:41
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-05-18 23:52:52
+LastEditTime: 2023-06-02 17:29:21
 Description: helper function for training the model
 '''
 import numpy as np
@@ -200,3 +200,73 @@ def evaluate(dataloader, model, loss_fn, device, history):
     history['test_f1'].append(float(val_f1))
     history['test_f1_all'].append(val_f1_none.tolist())
     history['test_loss'].append(sum(loss_curve) / len(loss_curve))
+    
+    
+    
+def fit(train_loader, val_loader, model, loss_fn, optimizer, n_epochs, device, history, scheduler=None):
+    for epoch in range(n_epochs):
+        model.train()
+        losses = []
+        total_loss = 0
+        
+        for batch_idx, (data, target) in enumerate(train_loader):
+            target = target if len(target) > 0 else None
+            if not type(data) in (tuple, list):
+                data = (data,)
+                
+            data = tuple(d.to(device, dtype=torch.float32) for d in data)
+            target = target.to(device, dtype=torch.float32)
+            
+            optimizer.zero_grad()
+            outputs = model(*data)
+            
+            if type(outputs) not in (tuple, list):
+                outputs = (outputs,)
+            
+            loss_inputs = outputs
+            if target is not None:
+                target = (target,)
+                loss_inputs += target
+                
+            loss_outputs = loss_fn(*loss_inputs)
+            loss = loss_outputs[0] if type(loss_outputs) in (tuple, list) else loss_outputs
+            losses.append(loss.item())
+            total_loss += loss.item()
+            loss.backward()
+            optimizer.step()
+        total_loss /= (batch_idx + 1)
+        history['train_loss'].append(total_loss)
+        
+        print(f"Epoch: {epoch + 1}/{n_epochs}")
+        print(f"train loss: {total_loss}")
+            
+        model.eval()
+        val_loss = 0
+        for batch_idx, (data, target) in enumerate(val_loader):
+            target = target if len(target) > 0 else None
+            if not type(data) in (tuple, list):
+                data = (data,)
+                
+            data = tuple(d.to(device, dtype=torch.float32) for d in data)
+            target = target.to(device, dtype=torch.float32)
+            
+            outputs = model(*data)
+            
+            if type(outputs) not in (tuple, list):
+                outputs = (outputs,)
+            
+            loss_inputs = outputs
+            if target is not None:
+                target = (target,)
+                loss_inputs += target
+                
+            loss_outputs = loss_fn(*loss_inputs)
+            loss = loss_outputs[0] if type(loss_outputs) in (tuple, list) else loss_outputs
+            losses.append(loss.item())
+            val_loss += loss.item()
+            
+        total_loss = val_loss / (batch_idx + 1)
+        history['val_loss'].append(total_loss)
+        
+        print(f"val loss: {total_loss}")
+        

@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-05-21 22:20:10
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-06-01 14:18:04
+LastEditTime: 2023-06-01 23:59:05
 Description: SNN model. test the tsne result to see if the features embedding could be distinguished with each other
 '''
 #%%
@@ -20,8 +20,8 @@ import seaborn as sns
 from loader import waveformDataset
 from model import SiameseNet
 
-X = np.load('dataset/8cases_jinan/test_set/X_test.npy')
-y = np.load('dataset/8cases_jinan/test_set/y_test.npy')
+X = np.load('dataset/8cases_jinan/new_training_set/X_train.npy')
+y = np.load('dataset/8cases_jinan/new_training_set/y_train.npy')
 
 X_0 = X[np.where(y == 0)[0]]
 X_1 = X[np.where(y == 1)[0]]
@@ -67,7 +67,8 @@ r = np.random.randint(0, X_7.shape[0], num_query)
 query_7, query_7_y = X_7[r], y_7[r]
 
 # trained_model = "saved_models/snn/2_loss_last_round_2d_snn_margin2_8cases_epochs30_lr_0.001_bs_128_best_model.pth"
-trained_model = "saved_models/snn/new_2_loss_2d_snn_margin2_8cases_epochs30_lr_0.001_bs_128_best_model.pth"
+# trained_model = "saved_models/snn/new_2_loss_2d_snn_margin2_8cases_epochs30_lr_0.001_bs_128_best_model.pth"
+trained_model = "saved_models/new_snn/new_2_loss_2d_snn_margin2_8cases_epochs20_lr_0.001_bs_128_best_model.pth"
 device = torch.device("cuda:2" if torch.cuda.is_available() else "cpu")
 model = SiameseNet(n_input_channels=6,
             n_output_channels=64,
@@ -135,9 +136,9 @@ with torch.no_grad():
     query_7_embedding = pred.cpu().numpy()
     # query_7_embedding = np.expand_dims(query_7_embedding, axis=0)
     
-X_embedding = np.concatenate((query_1_embedding, query_2_embedding, query_3_embedding, query_4_embedding, query_5_embedding, query_6_embedding, query_7_embedding,), axis=0)
+X_embedding = np.concatenate((query_0_embedding, query_1_embedding, query_2_embedding, query_3_embedding, query_4_embedding, query_5_embedding, query_6_embedding, query_7_embedding,), axis=0)
 
-y_embedding = np.concatenate((query_1_y, query_2_y, query_3_y, query_4_y, query_5_y, query_6_y, query_7_y), axis=0)
+y_embedding = np.concatenate((query_0_y, query_1_y, query_2_y, query_3_y, query_4_y, query_5_y, query_6_y, query_7_y), axis=0)
 
 
 # scatter_result_df = pd.DataFrame({'feature_1': X_embedding[:,0], 'feature_2': X_embedding[:,1], 'label': y_embedding})
@@ -149,19 +150,28 @@ y_embedding = np.concatenate((query_1_y, query_2_y, query_3_y, query_4_y, query_
 # ax.set_aspect('equal')
 # ax.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.0)
 
-
-
-n_components = 2
-tsne = TSNE(n_components)
-
+tsne = TSNE(n_components = 2, random_state=27)
 tsne_result = tsne.fit_transform(X_embedding)
 
-tsne_result_df = pd.DataFrame({'tsne_1': tsne_result[:,0], 'tsne_2': tsne_result[:,1], 'label': y_embedding})
-fig, ax = plt.subplots(1, figsize=(15,10))
-sns.scatterplot(x='tsne_1', y='tsne_2', hue='label', data=tsne_result_df, ax=ax,s=120)
-lim = (tsne_result.min()-5, tsne_result.max()+5)
-ax.set_xlim(lim)
-ax.set_ylim(lim)
-ax.set_aspect('equal')
-ax.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.0)
+plt.style.use("dark_background")
+plt.figure(figsize=(12, 7), dpi=700)
+plt.scatter(tsne_result[:, 0], tsne_result[:, 1], c=y_embedding, alpha=0.8, cmap=plt.cm.get_cmap('rainbow', 8))
+plt.title("t-SNE result")
+cbar = plt.colorbar(ticks=range(10)) 
+cbar.set_label(label='class label')
+plt.show()
+
+# n_components = 2
+# tsne = TSNE(n_components)
+
+# tsne_result = tsne.fit_transform(X_embedding)
+
+# tsne_result_df = pd.DataFrame({'tsne_1': tsne_result[:,0], 'tsne_2': tsne_result[:,1], 'label': y_embedding})
+# fig, ax = plt.subplots(1, figsize=(15,10))
+# sns.scatterplot(x='tsne_1', y='tsne_2', hue='label', data=tsne_result_df, ax=ax,s=120)
+# lim = (tsne_result.min()-5, tsne_result.max()+5)
+# ax.set_xlim(lim)
+# ax.set_ylim(lim)
+# ax.set_aspect('equal')
+# ax.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.0)
 # %%

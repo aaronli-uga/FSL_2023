@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-05-16 23:28:18
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-06-01 17:41:19
+LastEditTime: 2023-06-01 23:03:08
 Description: query on model not trained by snn. Simply remove the last layer of the model to get the feature embedding.
 '''
 #%%
@@ -39,7 +39,7 @@ y_12 = y[np.where(y == 12)[0]]
 y_13 = y[np.where(y == 13)[0]]
 
 # randomly select the support set.
-num_shots = 1000
+num_shots = 10
 num_query = 100
 support_8 = X_8[np.random.randint(0, X_8.shape[0], num_shots)]
 support_9 = X_9[np.random.randint(0, X_9.shape[0], num_shots)]

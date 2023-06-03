@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-04-06 21:32:59
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-05-30 14:42:57
+LastEditTime: 2023-06-02 16:17:07
 Description: deep learning models definition
 '''
 import torch
@@ -169,25 +169,29 @@ class SiameseNet(nn.Module):
         return output1_embedding, output1_classification, output2_embedding, output2_classification
 
 
-
-# incomplete prototypical networks
-class PrototypicalNetworks(nn.Module):
-    def __init__(self, backbone: nn.Module) -> None:
-        super(PrototypicalNetworks, self).__init__()
-        self.backbone = backbone
-        
-    def forward(
-        self,
-        support_data: torch.Tensor,
-        support_labels: torch.Tensor,
-        query_data: torch.Tensor,
-    ) -> torch.Tensor:
-        """
-        Predict query labels using labeld support data.
-        """
-        z_support = self.backbone.forward(support_data)
-        z_query = self.bakbone.forward(query_data)
-        
-        n_way = len(torch.unique(support_labels))
-        # Prototype i is the mean of all support features vector with label i
-        
+class DistanceNet(nn.Module):
+    def __init__(self, embedding_net) -> None:
+        super(DistanceNet, self).__init__()
+        self.embedding_net = embedding_net
+        self.trainlayer = nn.Sequential(
+            nn.Linear(128, 64),
+            nn.ReLU(),
+            nn.Linear(64,32)
+        )
+    
+    def forward(self, x1, x2):
+        # freeze the parameters update for embedding net
+        with torch.no_grad():
+            x1 = self.embedding_net(x1)
+            x2 = self.embedding_net(x2)
+            
+        output1 = self.trainlayer(x1)
+        output2 = self.trainlayer(x2)
+        return output1, output2
+    
+    def get_embedding(self, x):
+        with torch.no_grad():
+            x = self.embedding_net(x)
+            
+        output = self.trainlayer(x)
+        return output

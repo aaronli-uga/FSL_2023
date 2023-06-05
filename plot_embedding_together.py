@@ -1,10 +1,3 @@
-'''
-Author: Qi7
-Date: 2023-06-02 21:21:54
-LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-06-04 18:37:00
-Description: 
-'''
 #%%
 import numpy as np
 import torch
@@ -16,8 +9,28 @@ from util import extract_embeddings, plot_embeddings, plot_2d_embeddings
 X = np.load('dataset/8cases_jinan/new_test_set/X_test.npy')
 y = np.load('dataset/8cases_jinan/new_test_set/y_test.npy')
 
-# X_query = np.load('dataset/8cases_jinan/new_query_set/X_embedding_plot.npy')
-# y_query = np.load('dataset/8cases_jinan/new_query_set/y_embedding_plot.npy')
+# X = X[np.where(y == 6)[0]]
+# y = y[np.where(y == 6)[0]]
+
+
+X_query = np.load('dataset/8cases_jinan/new_query_set/X_embedding_plot.npy')
+y_query = np.load('dataset/8cases_jinan/new_query_set/y_embedding_plot.npy')
+X_8 = X_query[np.where(y_query == 8)[0]]
+X_9 = X_query[np.where(y_query == 9)[0]]
+X_10 = X_query[np.where(y_query == 10)[0]]
+X_11 = X_query[np.where(y_query == 11)[0]]
+X_12 = X_query[np.where(y_query == 12)[0]]
+
+y_8 = y_query[np.where(y_query == 8)[0]]
+y_9 = y_query[np.where(y_query == 9)[0]]
+y_10 = y_query[np.where(y_query == 10)[0]]
+y_11 = y_query[np.where(y_query == 11)[0]]
+y_12 = y_query[np.where(y_query == 12)[0]]
+
+
+# X = np.concatenate((X, X_12), axis=0)
+# y = np.concatenate((y, y_12))
+
 
 trained_model = "saved_models/2d_snn/margin_1.0_epoch_300_contrastive_model.pth"
 

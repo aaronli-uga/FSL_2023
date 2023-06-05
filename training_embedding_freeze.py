@@ -1,3 +1,10 @@
+'''
+Author: Qi7
+Date: 2023-06-02 16:01:42
+LastEditors: aaronli-uga ql61608@uga.edu
+LastEditTime: 2023-06-04 17:00:08
+Description: 
+'''
 import numpy as np
 import matplotlib.pyplot as plt
 import torch
@@ -14,7 +21,7 @@ from model import DistanceNet, QNN
 from training import fit
 from losses import ContrastiveLoss
 
-save_model_path = "saved_models/new_snn/"
+save_model_path = "saved_models/2d_snn/"
 X = np.load('dataset/8cases_jinan/new_training_set/X_train.npy')
 y = np.load('dataset/8cases_jinan/new_training_set/y_train.npy')
 
@@ -38,10 +45,10 @@ embedding_net.fc1 = nn.Flatten()
 
 model = DistanceNet(embedding_net=embedding_net)
 
-device = torch.device("cuda:2" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
 margin = 1.
 lr = 1e-3
-n_epochs = 20
+n_epochs = 300
 optimizer = optim.Adam(model.parameters(), lr=lr)
 loss_fn = ContrastiveLoss(margin=margin)
 history = dict(train_loss=[], val_loss=[])
@@ -55,9 +62,11 @@ fit(train_loader=train_data_loader,
     n_epochs=n_epochs,
     device=device,
     history=history,
+    save_model_path=save_model_path,
+    margin=margin
 )
 
-torch.save(model.state_dict(), save_model_path + f"contrastive_loss_model.pth")
+# torch.save(model.state_dict(), save_model_path + f"margin_{margin}_epoch_{n_epochs}_contrastive_model.pth")
 
-np.save(save_model_path + f"contrastive_history.npy", history)
+np.save(save_model_path + f"margin_{margin}_epoch_{n_epochs}_contrastive_history.npy", history)
 

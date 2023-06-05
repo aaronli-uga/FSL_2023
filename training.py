@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-04-07 11:13:41
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-06-02 17:29:21
+LastEditTime: 2023-06-04 14:46:35
 Description: helper function for training the model
 '''
 import numpy as np
@@ -203,7 +203,8 @@ def evaluate(dataloader, model, loss_fn, device, history):
     
     
     
-def fit(train_loader, val_loader, model, loss_fn, optimizer, n_epochs, device, history, scheduler=None):
+def fit(train_loader, val_loader, model, loss_fn, optimizer, n_epochs, device, history, save_model_path, margin, scheduler=None):
+    max_val_loss = 1
     for epoch in range(n_epochs):
         model.train()
         losses = []
@@ -267,6 +268,9 @@ def fit(train_loader, val_loader, model, loss_fn, optimizer, n_epochs, device, h
             
         total_loss = val_loss / (batch_idx + 1)
         history['val_loss'].append(total_loss)
+        if max_val_loss > total_loss:
+            max_val_loss = total_loss
+            torch.save(model.state_dict(), save_model_path + f"margin_{margin}_epoch_{n_epochs}_contrastive_model.pth")
         
         print(f"val loss: {total_loss}")
         

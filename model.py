@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-04-06 21:32:59
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-06-02 16:17:07
+LastEditTime: 2023-06-04 13:47:42
 Description: deep learning models definition
 '''
 import torch
@@ -176,7 +176,9 @@ class DistanceNet(nn.Module):
         self.trainlayer = nn.Sequential(
             nn.Linear(128, 64),
             nn.ReLU(),
-            nn.Linear(64,32)
+            nn.Linear(64,32),
+            nn.ReLU(),
+            nn.Linear(32,2)
         )
     
     def forward(self, x1, x2):

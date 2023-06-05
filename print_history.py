@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-04-07 23:27:47
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-06-02 21:01:33
+LastEditTime: 2023-06-04 18:30:38
 Description: print out the history information of trained model, such as test loss and test f1 score.
 '''
 #%%
@@ -11,7 +11,7 @@ from matplotlib import pyplot as plt
 
 # trained_model = "saved_models/snn/2_loss_last_round_2d_snn_margin2_8cases_epochs30_lr_0.001_bs_128_best_model.pth"
 # trained_model = "saved_models/snn/new_2_loss_2d_snn_margin2_8cases_epochs30_lr_0.001_bs_128_history.npy"
-trained_model = "saved_models/new_snn/contrastive_history.npy"
+trained_model = "saved_models/2d_snn/margin_1.0_epoch_300_contrastive_history.npy"
 
 history = np.load(trained_model, allow_pickle=True).item()
 

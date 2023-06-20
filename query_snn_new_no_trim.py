@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-05-16 23:28:18
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-06-05 11:54:28
+LastEditTime: 2023-06-08 09:36:00
 Description: Test the accuracy from the query set. Number of shots and number of query is provided.
 '''
 #%%
@@ -63,10 +63,13 @@ y_12 = y[np.where(y == 12)[0]]
 
 
 # randomly select the support set.
-num_shots = 30
-num_query = 200
+num_shots = 10
+num_query = 1000
 
 # Prepare the support set
+np.random.seed(23)
+# np.random.seed(25)
+
 rand_index = np.random.randint(0, X_0.shape[0], num_shots)
 support_0 = X_0[rand_index]
 support_0_label = y_0[rand_index]
@@ -179,6 +182,8 @@ query_12_loader = DataLoader(testset, batch_size=128, shuffle=False)
 
 
 trained_model = "saved_models/2d_snn/margin_1.0_epoch_300_contrastive_model.pth"
+# trained_model = "saved_models/new_snn/margin_10.0_epoch_50_contrastive_model.pth"
+
 
 embedding_net = QNN(n_input_channels=6,
                     n_output_channels=64,

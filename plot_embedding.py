@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-06-02 21:21:54
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-06-04 18:37:00
+LastEditTime: 2023-06-12 01:10:02
 Description: 
 '''
 #%%
@@ -20,6 +20,7 @@ y = np.load('dataset/8cases_jinan/new_test_set/y_test.npy')
 # y_query = np.load('dataset/8cases_jinan/new_query_set/y_embedding_plot.npy')
 
 trained_model = "saved_models/2d_snn/margin_1.0_epoch_300_contrastive_model.pth"
+# trained_model = "saved_models/new_snn/margin_20.0_epoch_100_contrastive_model.pth"
 
 testset = waveformDataset(X, y)
 batch_size = 128
@@ -40,4 +41,5 @@ device = torch.device("cuda:2" if torch.cuda.is_available() else "cpu")
 
 test_embeddings, test_labels = extract_embeddings(test_data_loader, model, device)
 plot_2d_embeddings(test_embeddings, test_labels)
+# plot_embeddings(test_embeddings, test_labels)
 # %%

@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-05-17 16:24:45
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-06-04 22:13:47
+LastEditTime: 2023-06-12 01:13:08
 Description: utils function for sliding window
 '''
 # %matplotlib inline
@@ -52,32 +52,36 @@ def plot_embeddings(embeddings, targets, xlim=None, ylim=None):
     tsne = TSNE(n_components = 2, random_state=27)
     embeddings = tsne.fit_transform(embeddings)
     plt.figure(figsize=(10,10))
-    # for i in range(8):
-    for i in range(8, 14): # for query embedding plot
+    for i in range(8):
+    # for i in range(8, 14): # for query embedding plot
         inds = np.where(targets==i)[0]
-        plt.scatter(embeddings[inds,0], embeddings[inds,1], alpha=0.5, color=colors[i - 8])
-        # plt.scatter(embeddings[inds,0], embeddings[inds,1], alpha=0.5, color=colors[i])
-    if xlim:
-        plt.xlim(xlim[0], xlim[1])
-    if ylim:
-        plt.ylim(ylim[0], ylim[1])
-    plt.legend(mnist_classes)
-    
-def plot_2d_embeddings(embeddings, targets, xlim=None, ylim=None):
-    plt.figure(figsize=(10,10))
-    for i in range(9):
-    # for i in range(8, 13): # for query embedding plot
-        if i == 8:
-            inds = np.where(targets==12)[0]
-        else:
-            inds = np.where(targets==i)[0]
         # plt.scatter(embeddings[inds,0], embeddings[inds,1], alpha=0.5, color=colors[i - 8])
         plt.scatter(embeddings[inds,0], embeddings[inds,1], alpha=0.5, color=colors[i])
     if xlim:
         plt.xlim(xlim[0], xlim[1])
     if ylim:
         plt.ylim(ylim[0], ylim[1])
-    plt.legend(mnist_classes)
+    plt.xticks(fontsize=28)
+    plt.yticks(fontsize=28)
+    # plt.legend(mnist_classes, fontsize = 23)
+    
+def plot_2d_embeddings(embeddings, targets, xlim=None, ylim=None):
+    plt.figure(figsize=(10,10))
+    for i in range(8):
+    # for i in range(8, 13): # for query embedding plot
+        if i == 8:
+            inds = np.where(targets==12)[0]
+        else:
+            inds = np.where(targets==i)[0]
+        # plt.scatter(embeddings[inds,0], embeddings[inds,1], alpha=0.5, color=colors[i - 8])
+        plt.scatter(embeddings[inds,0], embeddings[inds,1], alpha=0.8, color=colors[i], s=100)
+    if xlim:
+        plt.xlim(xlim[0], xlim[1])
+    if ylim:
+        plt.ylim(ylim[0], ylim[1])
+    plt.xticks(fontsize=28)
+    plt.yticks(fontsize=28)
+    plt.legend(mnist_classes, fontsize = 25)
 
 
 def extract_embeddings(dataloader, model, device):
